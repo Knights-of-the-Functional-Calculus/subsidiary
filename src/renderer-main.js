@@ -81,7 +81,7 @@ const keycode = require('keycode');
 //    key events           //
 // /////////////////////////
 document.addEventListener('keydown', onDocumentKeyDown, false);
-domElement.addEventListener('keydown', onConsoleKeyDown, false);
+document.addEventListener('keydown', onConsoleKeyDown, false);
 /**
  * @param {Object} event
  */
