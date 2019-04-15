@@ -1,8 +1,9 @@
 const request = require('request');
+const Character = require('./src/game/Character.js');
 
 const ipcRenderer = require('electron').ipcRenderer;
 const renderer = new THREE.WebGLRenderer({
-  alpha: true,
+    alpha: true,
 });
 renderer.autoClear = false;
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -20,7 +21,7 @@ camera.position.z = 3;
 const mixerContext = new THREEx.HtmlMixer.Context(renderer, scene, camera);
 // handle window resize for mixerContext
 window.addEventListener('resize', function() {
-  mixerContext.rendererCss.setSize(window.innerWidth, window.innerHeight);
+    mixerContext.rendererCss.setSize(window.innerWidth, window.innerHeight);
 }, false);
 // /////////////////////////////////////////////////////
 //    mixerContext configuration and dom attachement
@@ -69,37 +70,53 @@ scene.add(mixerPlane.object3d);
 /**
  */
 function onResize() {
-  // notify the renderer of the size change
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  // update the camera
-  camera.aspect = window.innerWidth / window.innerHeight;
-  camera.updateProjectionMatrix();
+    // notify the renderer of the size change
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    // update the camera
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
 }
 
 const keycode = require('keycode');
 // ///////////////////////////
 //    key events           //
 // /////////////////////////
-document.addEventListener('keydown', onDocumentKeyDown, false);
-document.addEventListener('keydown', onConsoleKeyDown, false);
+// document.addEventListener('keydown', onDocumentKeyDown, false);
+// document.addEventListener('keydown', onConsoleKeyDown, false);
+
+const player = new Character({
+    document,
+    terminal: domElement,
+    events: [{
+        type: 'keydown',
+        func: onDocumentKeyDown,
+        capture: false
+    }, {
+        type: 'keydown',
+        func: onConsoleKeyDown,
+        capture: false
+    }]
+});
+
 /**
  * @param {Object} event
  */
 function onDocumentKeyDown(event) {
-  const keyCode = event.which;
-  if (keyCode == keycode('T')) {
-    domElement.hidden = false;
-  }
+    const keyCode = event.which;
+    if (keyCode == keycode('T')) {
+        domElement.hidden = false;
+    }
+    console.log(this.characterInfo)
 };
 /**
  * @param {Object} event
  */
 function onConsoleKeyDown(event) {
-  const keyCode = event.which;
-  if (keyCode == keycode('Esc')) {
-    console.log('pressed');
-    domElement.hidden = true;
-  }
+    const keyCode = event.which;
+    if (keyCode == keycode('Esc')) {
+        console.log('pressed');
+        domElement.hidden = true;
+    }
 };
 
 window.addEventListener('resize', onResize, false);
@@ -107,35 +124,35 @@ window.addEventListener('resize', onResize, false);
 //    render the scene            //
 // ////////////////////////////////
 ipcRenderer.on('load-event', function(event, store) {
-  if (process.env.DEV) {
-    console.log('Waiting for wetty...');
-  }
-  const checkWettyReadiness = function() {
     if (process.env.DEV) {
-      console.log('...');
+        console.log('Waiting for wetty...');
     }
-    setTimeout(function() {
-      request
-          .head(url)
-          .on('response', function(response) {
-            if (process.env.DEV) {
-              console.log('Adding render functions...');
-            }
-            // render the css3d
-            updateFcts.push(function(delta, now) {
-              // NOTE: it must be after camera mode
-              mixerContext.update(delta, now);
-            });
-          })
-          .on('error', checkWettyReadiness);
-    }, 2000);
-  };
-  checkWettyReadiness();
+    const checkWettyReadiness = function() {
+        if (process.env.DEV) {
+            console.log('...');
+        }
+        setTimeout(function() {
+            request
+                .head(url)
+                .on('response', function(response) {
+                    if (process.env.DEV) {
+                        console.log('Adding render functions...');
+                    }
+                    // render the css3d
+                    updateFcts.push(function(delta, now) {
+                        // NOTE: it must be after camera mode
+                        mixerContext.update(delta, now);
+                    });
+                })
+                .on('error', checkWettyReadiness);
+        }, 2000);
+    };
+    checkWettyReadiness();
 });
 
 // render the webgl
 updateFcts.push(function() {
-  renderer.render(scene, camera);
+    renderer.render(scene, camera);
 });
 
 // //////////////////////////////
@@ -143,15 +160,15 @@ updateFcts.push(function() {
 // ////////////////////////////
 let lastTimeMsec = null;
 requestAnimationFrame(function animate(nowMsec) {
-  // keep looping
-  requestAnimationFrame(animate);
-  // measure time
-  lastTimeMsec = lastTimeMsec || nowMsec - 1000 / 60;
+    // keep looping
+    requestAnimationFrame(animate);
+    // measure time
+    lastTimeMsec = lastTimeMsec || nowMsec - 1000 / 60;
 
-  const deltaMsec = Math.min(200, nowMsec - lastTimeMsec);
-  lastTimeMsec = nowMsec;
-  // call each update function
-  updateFcts.forEach(function(updateFn) {
-    updateFn(deltaMsec / 1000, nowMsec / 1000);
-  });
+    const deltaMsec = Math.min(200, nowMsec - lastTimeMsec);
+    lastTimeMsec = nowMsec;
+    // call each update function
+    updateFcts.forEach(function(updateFn) {
+        updateFn(deltaMsec / 1000, nowMsec / 1000);
+    });
 });
