@@ -1,5 +1,5 @@
 const request = require('request');
-const Character = require('./src/game/Character.js');
+const ObjectImporter = require('./src/game/ObjectImporter.js');
 
 const ipcRenderer = require('electron').ipcRenderer;
 const renderer = new THREE.WebGLRenderer({
@@ -77,47 +77,14 @@ function onResize() {
     camera.updateProjectionMatrix();
 }
 
-const keycode = require('keycode');
 // ///////////////////////////
 //    key events           //
 // /////////////////////////
 // document.addEventListener('keydown', onDocumentKeyDown, false);
 // document.addEventListener('keydown', onConsoleKeyDown, false);
 
-const player = new Character({
-    document,
-    terminal: domElement,
-    events: [{
-        type: 'keydown',
-        func: onDocumentKeyDown,
-        capture: false
-    }, {
-        type: 'keydown',
-        func: onConsoleKeyDown,
-        capture: false
-    }]
-});
-
-/**
- * @param {Object} event
- */
-function onDocumentKeyDown(event) {
-    const keyCode = event.which;
-    if (keyCode == keycode('T')) {
-        domElement.hidden = false;
-    }
-    console.log(this.characterInfo)
-};
-/**
- * @param {Object} event
- */
-function onConsoleKeyDown(event) {
-    const keyCode = event.which;
-    if (keyCode == keycode('Esc')) {
-        console.log('pressed');
-        domElement.hidden = true;
-    }
-};
+const player = ObjectImporter.importGameObject('resources/characters/MainCharacter.json');
+ObjectImporter.addToScene(scene, player);
 
 window.addEventListener('resize', onResize, false);
 // //////////////////////////////////
