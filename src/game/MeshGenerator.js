@@ -9,3 +9,15 @@ exports.circle = function() {
 	this.mesh = circle;
 	return circle;
 }
+
+exports.iframe = function() {
+	const domElement = document.createElement('iframe');
+	domElement.id = this.info.id;
+	domElement.src = this.info.src;
+	domElement.style= this.info.style;
+	// create the plane
+	const mixerPlane = new THREEx.HtmlMixer.Plane(this.mixerContext, domElement);
+	mixerPlane.object3d.scale.multiplyScalar(2);
+	this.mesh = mixerPlane.object3d;
+	return mixerPlane.object3d;
+}

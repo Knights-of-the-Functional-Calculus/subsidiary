@@ -1,14 +1,14 @@
 const request = require('request');
 const ObjectImporter = require('./src/game/ObjectImporter.js');
 
-const ipcRenderer = require('electron').ipcRenderer;
+//const ipcRenderer = require('electron').ipcRenderer;
 const renderer = new THREE.WebGLRenderer({
     alpha: true,
 });
 renderer.autoClear = false;
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
-const updateFcts = [];
+const threads = [{}];
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(45,
     window.innerWidth / window.innerHeight,
@@ -16,7 +16,7 @@ const camera = new THREE.PerspectiveCamera(45,
 camera.position.z = 3;
 
 // ////////////////////////////////////////
-//    create THREEx.HtmlMixer           //
+//    create THREEx.HtmlMixer      //
 // //////////////////////////////////////
 const mixerContext = new THREEx.HtmlMixer.Context(renderer, scene, camera);
 // handle window resize for mixerContext
@@ -50,20 +50,22 @@ css3dElement.appendChild(webglCanvas);
 //    create a Plane for THREEx.HtmlMixer       //
 // //////////////////////////////////////////////
 
-// create the iframe element
-const url = 'http://0.0.0.0:3000';
-const domElement = document.createElement('iframe');
-domElement.id = 'console';
-domElement.src = url;
-domElement.style.border = 'none';
-// create the plane
-const mixerPlane = new THREEx.HtmlMixer.Plane(mixerContext, domElement);
-mixerPlane.object3d.scale.multiplyScalar(2);
-scene.add(mixerPlane.object3d);
+const player = ObjectImporter.importGameObject('resources/characters/MainCharacter.json');
+player.camera = camera;
+player.cameraLocked = true;
+player.thread = threads[0];
+ObjectImporter.addToScene(scene, player);
 
-// //////////////////////////////////
-//    Camera Controls             //
-// ////////////////////////////////
+const terminal = ObjectImporter.importGameObject('resources/widgets/Terminal.json');
+terminal.mixerContext = mixerContext;
+ObjectImporter.addToScene(scene, terminal);
+
+// render the webgl
+threads[0].renderWebGL = function() {
+    renderer.render(scene, camera);
+};
+
+
 // ////////////////////////////////
 //    handle resize             //
 // //////////////////////////////
@@ -77,50 +79,37 @@ function onResize() {
     camera.updateProjectionMatrix();
 }
 
-// ///////////////////////////
-//    key events           //
-// /////////////////////////
-// document.addEventListener('keydown', onDocumentKeyDown, false);
-// document.addEventListener('keydown', onConsoleKeyDown, false);
-
-const player = ObjectImporter.importGameObject('resources/characters/MainCharacter.json');
-ObjectImporter.addToScene(scene, player);
 
 window.addEventListener('resize', onResize, false);
 // //////////////////////////////////
 //    render the scene            //
 // ////////////////////////////////
-ipcRenderer.on('load-event', function(event, store) {
+const checkWettyReadiness = function() {
     if (process.env.DEV) {
         console.log('Waiting for wetty...');
     }
-    const checkWettyReadiness = function() {
-        if (process.env.DEV) {
-            console.log('...');
-        }
-        setTimeout(function() {
-            request
-                .head(url)
-                .on('response', function(response) {
-                    if (process.env.DEV) {
-                        console.log('Adding render functions...');
-                    }
-                    // render the css3d
-                    updateFcts.push(function(delta, now) {
-                        // NOTE: it must be after camera mode
-                        mixerContext.update(delta, now);
-                    });
-                })
-                .on('error', checkWettyReadiness);
-        }, 2000);
-    };
-    checkWettyReadiness();
-});
+    setTimeout(function() {
+        request
+            .head(terminal.info.src)
+            .on('response', function(response) {
+                if (process.env.DEV) {
+                    console.log('Adding render functions...');
+                }
+                // render the css3d
+                threads[0].renderCss3d = function(delta, now) {
+                    // NOTE: it must be after camera mode
+                    mixerContext.update(delta, now);
+                };
+            })
+            .on('error', checkWettyReadiness);
+    }, 2000);
+};
+checkWettyReadiness();
 
-// render the webgl
-updateFcts.push(function() {
-    renderer.render(scene, camera);
-});
+// ipcRenderer.on('load-event', function(event, store) {
+//     if (process.env.DEV) {
+//     }
+// });
 
 // //////////////////////////////
 //    loop runner             //
@@ -135,7 +124,7 @@ requestAnimationFrame(function animate(nowMsec) {
     const deltaMsec = Math.min(200, nowMsec - lastTimeMsec);
     lastTimeMsec = nowMsec;
     // call each update function
-    updateFcts.forEach(function(updateFn) {
-        updateFn(deltaMsec / 1000, nowMsec / 1000);
+    Object.keys(threads[0]).forEach(function(updateFn) {
+        threads[0][updateFn](deltaMsec / 1000, nowMsec / 1000);
     });
 });

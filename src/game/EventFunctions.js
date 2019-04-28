@@ -1,12 +1,30 @@
 const keycode = require('keycode');
 
 exports.injectEventFunctions = function(target) {
-	for (var i = target.events.length - 1; i >= 0; i--) {
-		target.events[i]['func'] = this[target.events[i]['func'] ];
-	}
+    for (var i = target.events.length - 1; i >= 0; i--) {
+        target.events[i]['func'] = this[target.events[i]['func']];
+    }
 }
 
+    const lerpFunc = async function(delta) {
+        if (this.c >= 1) {
+            delete this.gameObject.thread[`lerp${self.name}`];
+            this.gameObject.state = 'idle';
+        }
+        this.a = this.gameObject.mesh.position[this.axis];
+        this.c += delta * 15;
+        this.gameObject.mesh.position[this.axis] = THREE.Math.lerp(this.a, this.b, this.c);
+        if (this.gameObject.cameraLocked) {
+        	this.gameObject.camera.position[this.axis] = this.gameObject.mesh.position[this.axis] ;
+        }
+    }
+
 exports.wasd = function(event) {
+    if (this.state == 'moving') {
+        return;
+    }
+    const displacement = 0.2;
+    this.state = 'moving';
     const keyCode = event.which;
     const {
         up,
@@ -14,21 +32,30 @@ exports.wasd = function(event) {
         left,
         right
     } = this.info.movement;
+    const context = {
+        c: 0
+    };
+
     switch (keyCode) {
         case keycode(up):
-            this.mesh.position.y++;
+            context.axis = 'y';
+            context.b = this.mesh.position[context.axis] + displacement;
             break;
         case keycode(down):
-            this.mesh.position.y--;
+            context.axis = 'y';
+            context.b = this.mesh.position[context.axis] - displacement;
             break;
         case keycode(left):
-            this.mesh.position.x--;
+            context.axis = 'x';
+            context.b = this.mesh.position[context.axis] - displacement;
             break;
         case keycode(right):
-            this.mesh.position.x++;
+            context.axis = 'x';
+            context.b = this.mesh.position[context.axis] + displacement;
             break;
     }
-    console.log(this.mesh.position)
+    context.gameObject = this;
+    this.thread[`lerp${self.name}`] = lerpFunc.bind(context);
 }
 
 function onDocumentKeyDown(event) {
@@ -38,6 +65,7 @@ function onDocumentKeyDown(event) {
     }
     console.log(this.characterInfo)
 };
+
 function onConsoleKeyDown(event) {
     const keyCode = event.which;
     if (keyCode == keycode('Esc')) {
