@@ -1,8 +1,26 @@
 # subsidiary
 
+## Prerequisites
+
+Here are the programs you want in your environment:
+* [node](https://nodejs.org/en/) >=v11
+* npm - The appropriate version should be bundled with node.
+* [yarn](https://yarnpkg.com/en/docs/install) - Optional, LTS should do
+
 ## Usage
-You should have either yarn or npm installed. Make sure they aren't old. I haven't tested this with npm yet but >=6 should work.
+
 ```bash
-yarn dev # For debugging
-yarn start # For full view
+# Get the project with submodules
+git clone --recurse-submodules https://github.com/j4qfrost/subsidiary.git
+```
+
+```bash
+npm install
+npm dev # For debugging
+npm start # For full view
+
+# OR
+yarn install
+yarn dev 
+yarn start
 ```
