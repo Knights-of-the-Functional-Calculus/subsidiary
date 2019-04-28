@@ -6,7 +6,7 @@ exports.injectEventFunctions = function(target) {
     }
 }
 
-    const lerpFunc = async function(delta) {
+    const lerpFunc = function(delta) {
         if (this.c >= 1) {
             delete this.gameObject.thread[`lerp${self.name}`];
             this.gameObject.state = 'idle';
