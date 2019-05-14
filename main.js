@@ -68,8 +68,8 @@ function createWindow() {
  * @return {Promise}
  */
 function setupDevEnvironment() {
-    return compose.runContainer('wetty')
-        .then(() => compose.runContainer('wetty-ssh'));
+    return compose.dropContainers().then(compose.runContainer.bind(null, 'wetty'))
+        .then(compose.runContainer.bind(null, 'wetty-ssh'));
 }
 
 // This method will be called when Electron has finished

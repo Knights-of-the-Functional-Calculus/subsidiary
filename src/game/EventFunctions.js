@@ -6,18 +6,18 @@ exports.injectEventFunctions = function(target) {
     }
 }
 
-    const lerpFunc = function(delta) {
-        if (this.c >= 1) {
-            delete this.gameObject.thread[`lerp${self.name}`];
-            this.gameObject.state = 'idle';
-        }
-        this.a = this.gameObject.mesh.position[this.axis];
-        this.c += delta * 15;
-        this.gameObject.mesh.position[this.axis] = THREE.Math.lerp(this.a, this.b, this.c);
-        if (this.gameObject.cameraLocked) {
-        	this.gameObject.camera.position[this.axis] = this.gameObject.mesh.position[this.axis] ;
-        }
+const lerpFunc = function(delta) {
+    if (this.c >= 1) {
+        delete this.gameObject.thread[`lerp${self.name}`];
+        this.gameObject.state = 'idle';
     }
+    this.a = this.gameObject.mesh.position[this.axis];
+    this.c += delta * 15;
+    this.gameObject.mesh.position[this.axis] = THREE.Math.lerp(this.a, this.b, this.c);
+    if (this.gameObject.cameraLocked) {
+    	this.gameObject.camera.position[this.axis] = this.gameObject.mesh.position[this.axis] ;
+    }
+}
 
 exports.wasd = function(event) {
     if (this.state == 'moving') {

@@ -1,7 +1,7 @@
 const request = require('request');
 const ObjectImporter = require('./src/game/ObjectImporter.js');
 
-//const ipcRenderer = require('electron').ipcRenderer;
+const ipcRenderer = require('electron').ipcRenderer;
 const renderer = new THREE.WebGLRenderer({
     alpha: true,
 });
@@ -62,7 +62,7 @@ ObjectImporter.addToScene(scene, terminal);
 
 // render the webgl
 threads[0].renderWebGL = function() {
-  renderer.render(scene, camera);
+    renderer.render(scene, camera);
 };
 
 
@@ -84,38 +84,25 @@ window.addEventListener('resize', onResize, false);
 // //////////////////////////////////
 //    render the scene            //
 // ////////////////////////////////
-const checkWettyReadiness = function() {
+let loadEventStore = null;
+ipcRenderer.on('load-event', function(event, store) {
     if (process.env.DEV) {
-        console.log('Waiting for wetty...');
+        console.log('Adding render functions...');
     }
-    setTimeout(function() {
-        request
-            .head(terminal.info.src)
-            .on('response', function(response) {
-                if (process.env.DEV) {
-                    console.log('Adding render functions...');
-                }
-                // render the css3d
-                threads[0].renderCss3d = function(delta, now) {
-                    // NOTE: it must be after camera mode
-                    mixerContext.update(delta, now);
-                };
-            })
-            .on('error', checkWettyReadiness);
-    }, 2000);
-};
-checkWettyReadiness();
-
-// ipcRenderer.on('load-event', function(event, store) {
-//     if (process.env.DEV) {
-//     }
-// });
+    // render the css3d
+    threads[0].renderCss3d = function(delta, now) {
+        // NOTE: it must be after camera mode
+        mixerContext.update(delta, now);
+    };
+    loadEventStore = store;
+    console.log(store)
+});
 
 // //////////////////////////////
 //    loop runner             //
 // ////////////////////////////
 let lastTimeMsec = null;
-requestAnimationFrame(function animate(nowMsec) {
+function animate(nowMsec) {
     // keep looping
     requestAnimationFrame(animate);
     // measure time
@@ -127,4 +114,13 @@ requestAnimationFrame(function animate(nowMsec) {
     Object.keys(threads[0]).forEach(function(updateFn) {
         threads[0][updateFn](deltaMsec / 1000, nowMsec / 1000);
     });
-});
+}
+function loading(nowMsec) {
+  if (loadEventStore) {
+    requestAnimationFrame(animate);
+  }
+  else {
+    setTimeout(requestAnimationFrame.bind(null,loading), 1000);
+  }
+}
+requestAnimationFrame(loading);
