@@ -1,0 +1,13 @@
+{
+    "name": "Terminal",
+    "type": "Widget",
+    "mesh": "iframe",
+    "events": [],
+    "info": {
+        "id": "console",
+    	"src": "http://0.0.0.0:3000",
+        "style": {
+            "border": "none"
+        }
+    }
+}

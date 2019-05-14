@@ -62,7 +62,7 @@ ObjectImporter.addToScene(scene, terminal);
 
 // render the webgl
 threads[0].renderWebGL = function() {
-    renderer.render(scene, camera);
+  renderer.render(scene, camera);
 };
 
 
