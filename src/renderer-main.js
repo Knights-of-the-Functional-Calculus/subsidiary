@@ -102,9 +102,9 @@ ipcRenderer.on('load-event', function(event, store) {
 //    loop runner             //
 // ////////////////////////////
 let lastTimeMsec = null;
-function animate(nowMsec) {
+function runGame(nowMsec) {
     // keep looping
-    requestAnimationFrame(animate);
+    requestAnimationFrame(runGame);
     // measure time
     lastTimeMsec = lastTimeMsec || nowMsec - 1000 / 60;
 
@@ -117,7 +117,7 @@ function animate(nowMsec) {
 }
 function loading(nowMsec) {
   if (loadEventStore) {
-    requestAnimationFrame(animate);
+    requestAnimationFrame(runGame);
   }
   else {
     setTimeout(requestAnimationFrame.bind(null,loading), 1000);

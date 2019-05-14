@@ -1,26 +1,25 @@
 const compose = require('docker-compose');
 
+function rawPrint(output) {
+  console.log(String.raw`${output.err}`);
+}
 
 exports.runContainer = function(container, options = {}) {
   return compose.upOne(container, options)
-      .then((obj) => JSON.stringify(obj, 0, 2))
-      .then(console.log);
+      .then(rawPrint);
 };
 
 exports.runContainers = function(options = {}) {
   return compose.upAll(options)
-      .then((obj) => JSON.stringify(obj, 0, 2))
-      .then(console.log);
+      .then(rawPrint);
 };
 
 exports.stopContainers = function(options = {}) {
   return compose.stop(options)
-      .then((obj) => JSON.stringify(obj, 0, 2))
-      .then(console.log);
+      .then(rawPrint);
 };
 
 exports.dropContainers = function(options = {}) {
   return compose.down(options)
-      .then((obj) => JSON.stringify(obj, 0, 2))
-      .then(console.log);
+      .then(rawPrint);
 };
