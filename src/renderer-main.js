@@ -117,7 +117,7 @@ function runGame(nowMsec) {
 }
 function loading(nowMsec) {
   if (loadEventStore) {
-    requestAnimationFrame(runGame);
+    setTimeout(requestAnimationFrame.bind(null,runGame), 20);
   }
   else {
     setTimeout(requestAnimationFrame.bind(null,loading), 1000);

@@ -38,9 +38,8 @@ function createWindow() {
         mainWindow.webContents.openDevTools();
     }
 
-
     // Emitted when the window is closed.
-    mainWindow.on('closed', async function() {
+    mainWindow.on('closed', function() {
         // Dereference the window object, usually you would store windows
         // in an array if your app supports multi windows, this is the time
         // when you should delete the corresponding element.
@@ -56,10 +55,10 @@ function createWindow() {
             detail: 'Always CTRL+S',
             defaultId: 0,
             cancelId: 1
-        })
-        const leave = (choice === 0)
-        if (leave) {
-            event.preventDefault()
+        });
+
+        if (choice === 0) {
+            event.preventDefault();
         }
     })
 }
@@ -83,13 +82,13 @@ app.on('ready', function() {
 });
 
 // Quit when all windows are closed.
-app.on('window-all-closed', function() {
+app.on('window-all-closed', async function() {
     // On OS X it is common for applications and their menu bar
     // to stay active until the user quits explicitly with Cmd + Q
+    await compose.dropContainers();
     if (process.platform !== 'darwin') {
         app.quit();
     }
-    compose.dropContainers();
 });
 
 app.on('activate', function() {
