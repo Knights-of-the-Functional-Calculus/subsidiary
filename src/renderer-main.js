@@ -95,7 +95,6 @@ ipcRenderer.on('load-event', function(event, store) {
         mixerContext.update(delta, now);
     };
     loadEventStore = store;
-    console.log(store)
 });
 
 // //////////////////////////////

@@ -2,7 +2,13 @@
     "name": "Terminal",
     "type": "Widget",
     "mesh": "iframe",
-    "events": [],
+    "visible": true,
+    "events": [{
+        "name": "Toggle",
+        "func": "toggle",
+        "capture": true,
+        "type": "keydown"
+    }],
     "info": {
         "id": "console",
     	"src": "http://0.0.0.0:3000",

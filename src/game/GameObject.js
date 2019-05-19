@@ -4,12 +4,14 @@ function GameObject(args) {
     	type,
         events,
         info,
-        mesh
+        mesh,
+        visible
     } = args;
     this.name = name;
     this.type = type;
     this.mesh = mesh.bind(this);
     this.info = info;
+    this.visible = visible;
 
 	 this.addEvents = (events) => {
 	    events.forEach(({

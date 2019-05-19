@@ -19,6 +19,18 @@ const lerpFunc = function(delta) {
     }
 }
 
+exports.toggle = function(event) {
+    const keyCode = event.which;
+    if (keyCode == keycode('t')) {
+        this.visible = !this.visible;
+        this.domElement && (this.domElement.hidden = !this.visible);
+        this.mesh.visible = this.visible;
+        this.mesh.traverse(child => {
+            child.visible = this.visible;
+        });
+    }
+}
+
 exports.wasd = function(event) {
     if (this.state == 'moving') {
         return;
