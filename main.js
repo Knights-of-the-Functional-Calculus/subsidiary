@@ -9,7 +9,10 @@ const url = require('url');
 
 const compose = require('./src/ops/orchestration.js');
 if (process.env.DEV) {
-    require('electron-reload')(__dirname);
+    require('electron-reload')(__dirname, {
+        electron: path.join(__dirname, 'node_modules', '.bin', 'electron'),
+        hardResetMethod: 'exit'
+    });
 }
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -63,6 +66,7 @@ function createWindow() {
     })
 }
 
+
 /**
  * @return {Promise}
  */
@@ -75,11 +79,18 @@ function setupDevEnvironment() {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', function() {
+app.once('ready', function() {
     setupDevEnvironment().then(() => mainWindow.webContents.send('load-event', {
         dockerDone: true,
+        DEV: process.env.DEV,
     }));
     createWindow();
+    mainWindow.webContents.on('dom-ready', function() {
+        mainWindow.webContents.send('reload-event', {
+            dockerDone: true,
+            DEV: process.env.DEV,
+        })
+    })
 });
 
 // Quit when all windows are closed.

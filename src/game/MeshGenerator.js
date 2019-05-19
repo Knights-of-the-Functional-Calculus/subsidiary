@@ -17,7 +17,6 @@ exports.iframe = function() {
     domElement.id = this.info.id;
     domElement.src = this.info.src;
     domElement.style = this.info.style;
-    console.log(this.visible)
     // create the plane
     const mixerPlane = new THREEx.HtmlMixer.Plane(this.mixerContext, domElement);
     mixerPlane.object3d.scale.multiplyScalar(2);
@@ -25,7 +24,6 @@ exports.iframe = function() {
     this.domElement = domElement;
     this.mesh.visible = this.visible;
     this.domElement.hidden = !this.visible;
-
     this.mesh.traverse(child => {
         child.visible = this.visible;
     });

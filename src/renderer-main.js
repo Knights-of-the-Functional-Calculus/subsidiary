@@ -85,7 +85,27 @@ window.addEventListener('resize', onResize, false);
 //    render the scene            //
 // ////////////////////////////////
 let loadEventStore = null;
-ipcRenderer.on('load-event', function(event, store) {
+
+
+ipcRenderer.on('reload-event', (event, store) => {
+    loadEventStore = store;
+    request.head({
+        url: terminal.info.src
+    }, (err, response) => {
+        //TODO: Check to see if this etag is recurring
+        if (response.headers.etag === "W/\"3d4-16acd5f96f8\"") {
+            loadEventStore.dockerDone = true;
+            terminal.domElement.src = terminal.domElement.src;
+            threads[0].renderCss3d = function(delta, now) {
+                // NOTE: it must be after camera mode
+                mixerContext.update(delta, now);
+            };
+        }
+    });
+});
+
+ipcRenderer.on('load-event', (event, store) => {
+    process.env.DEV = store.DEV;
     if (process.env.DEV) {
         console.log('Adding render functions...');
     }
@@ -96,17 +116,16 @@ ipcRenderer.on('load-event', function(event, store) {
     };
     loadEventStore = store;
 });
-
 // //////////////////////////////
 //    loop runner             //
 // ////////////////////////////
 let lastTimeMsec = null;
+
 function runGame(nowMsec) {
     // keep looping
     requestAnimationFrame(runGame);
     // measure time
     lastTimeMsec = lastTimeMsec || nowMsec - 1000 / 60;
-
     const deltaMsec = Math.min(200, nowMsec - lastTimeMsec);
     lastTimeMsec = nowMsec;
     // call each update function
@@ -114,12 +133,12 @@ function runGame(nowMsec) {
         threads[0][updateFn](deltaMsec / 1000, nowMsec / 1000);
     });
 }
+
 function loading(nowMsec) {
-  if (loadEventStore) {
-    setTimeout(requestAnimationFrame.bind(null,runGame), 20);
-  }
-  else {
-    setTimeout(requestAnimationFrame.bind(null,loading), 1000);
-  }
+    if (loadEventStore) {
+        setTimeout(requestAnimationFrame.bind(null, runGame), 20);
+    } else {
+        setTimeout(requestAnimationFrame.bind(null, loading), 1000);
+    }
 }
 requestAnimationFrame(loading);

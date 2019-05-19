@@ -11,7 +11,7 @@ function GameObject(args) {
     this.type = type;
     this.mesh = mesh.bind(this);
     this.info = info;
-    this.visible = visible;
+    this.visible =  visible === undefined || visible;
 
 	 this.addEvents = (events) => {
 	    events.forEach(({

@@ -5,13 +5,13 @@
   "main": "main.js",
   "scripts": {
     "start": "./node_modules/.bin/electron .",
-    "dev": "./node_modules/.bin/electron -r dotenv/config . dotenv_config_path=./env/dev.env"
+    "dev": "./node_modules/.bin/electron -r dotenv/config . dotenv_config_path=.env"
   },
   "keywords": [
     "Electron",
     "three"
   ],
-  "author": "Alexander Guski",
+  "author": "Jack Frost",
   "license": "MIT",
   "devDependencies": {
     "babel-eslint": "^10.0.1",

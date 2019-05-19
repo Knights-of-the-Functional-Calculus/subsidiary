@@ -11,5 +11,8 @@ exports.importGameObject = function(filename) {
 
 exports.addToScene = function(scene, actor) {
 	console.log(actor);
-	scene.add(actor.mesh());
+	if (typeof actor.mesh === 'function')
+		scene.add(actor.mesh());
+	else
+		scene.add(actor.mesh);
 }
