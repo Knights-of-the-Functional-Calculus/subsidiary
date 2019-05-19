@@ -67,7 +67,8 @@ function createWindow() {
  * @return {Promise}
  */
 function setupDevEnvironment() {
-    return compose.dropContainers().then(compose.runContainer.bind(null, 'wetty'))
+    return compose.dropContainers()
+        .then(compose.runContainer.bind(null, 'wetty'))
         .then(compose.runContainer.bind(null, 'wetty-ssh'));
 }
 

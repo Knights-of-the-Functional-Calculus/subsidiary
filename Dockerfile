@@ -14,4 +14,4 @@ USER term
 EXPOSE 3000
 COPY --from=builder /usr/src/app /app
 RUN mkdir ~/.ssh
-CMD ssh-keyscan -H wetty-ssh >> ~/.ssh/known_hosts && node bin 
+CMD node bin 
