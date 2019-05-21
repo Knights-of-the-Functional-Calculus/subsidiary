@@ -1,5 +1,5 @@
 # subsidiary
-
+[![CircleCI](https://circleci.com/gh/j4qfrost/subsidiary.svg?style=svg)](https://circleci.com/gh/j4qfrost/subsidiary)
 ## Prerequisites
 
 Here are the programs you want in your environment:
