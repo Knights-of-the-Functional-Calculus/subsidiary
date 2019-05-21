@@ -3,10 +3,8 @@ const {
     BrowserWindow,
     dialog
 } = require('electron');
-
 const path = require('path');
 const url = require('url');
-
 const compose = require('./src/ops/orchestration.js');
 if (process.env.DEV) {
     require('electron-reload')(__dirname, {

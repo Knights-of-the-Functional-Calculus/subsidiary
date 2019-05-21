@@ -69,19 +69,3 @@ exports.wasd = function(event) {
     context.gameObject = this;
     this.thread[`lerp${self.name}`] = lerpFunc.bind(context);
 }
-
-function onDocumentKeyDown(event) {
-    const keyCode = event.which;
-    if (keyCode == keycode('T')) {
-        domElement.hidden = false;
-    }
-    console.log(this.characterInfo)
-};
-
-function onConsoleKeyDown(event) {
-    const keyCode = event.which;
-    if (keyCode == keycode('Esc')) {
-        console.log('pressed');
-        domElement.hidden = true;
-    }
-};

@@ -5,7 +5,8 @@
   "main": "main.js",
   "scripts": {
     "start": "./node_modules/.bin/electron .",
-    "dev": "./node_modules/.bin/electron -r dotenv/config . dotenv_config_path=.env"
+    "dev": "./node_modules/.bin/electron -r dotenv/config . dotenv_config_path=.env",
+    "test": "mocha 'test/**/*.js'"
   },
   "keywords": [
     "Electron",
@@ -20,7 +21,11 @@
     "electron-reload": "^1.4.0",
     "eslint": "^5.11.0",
     "eslint-config-google": "^0.11.0",
+    "mocha": "^6.1.4",
     "typescript": "^2.3.4"
+  },
+  "engines": {
+    "node": ">=11.15.0"
   },
   "dependencies": {
     "@types/stats": "^0.16.30",
