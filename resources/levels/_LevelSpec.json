@@ -1,0 +1,28 @@
+{
+    "id": "Level",
+    "instanceId": {
+        "type": "string"
+    },
+    "type": "object",
+    "name": {
+        "type": "string"
+    },
+    "gameObjects ": {
+        "type": "array",
+        "items": {
+            "$ref": "GameObject"
+        },
+        "default": []
+    },
+    "events": {
+        "items": {
+            "type": "array",
+            "$ref": "Event",
+            "default": []
+        }
+    },
+    "info": {
+        "type": "object"
+    },
+    "required": ["name"]
+}

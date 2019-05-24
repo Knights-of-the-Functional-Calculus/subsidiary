@@ -1,6 +1,5 @@
 {
     "name": "Terminal",
-    "type": "Widget",
     "mesh": "iframe",
     "events": [{
         "name": "Toggle",

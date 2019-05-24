@@ -1,6 +1,5 @@
 {
     "name": "MainCharacter",
-    "type": "Character",
     "mesh": "circle",
     "events": [{
         "name": "Movement",

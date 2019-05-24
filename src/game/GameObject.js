@@ -1,26 +1,28 @@
 function GameObject(args) {
     const {
     	name,
-    	type,
+    	objectType,
         events,
         info,
         mesh,
+        children,
         visible
     } = args;
     this.name = name;
-    this.type = type;
+    this.type = objectType;
     this.mesh = mesh.bind(this);
     this.info = info;
+    this.children = children;
     this.visible =  visible === undefined || visible;
 
 	 this.addEvents = (events) => {
 	    events.forEach(({
-	        type,
+	        eventType,
 	        func,
 	        capture
 	    }) => {
 	        func = func.bind(this);
-	        document.addEventListener(type, func, capture);
+	        document.addEventListener(eventType, func, capture);
 	    });
 	}
 

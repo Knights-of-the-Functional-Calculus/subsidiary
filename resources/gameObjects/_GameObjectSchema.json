@@ -1,0 +1,35 @@
+{
+    "id": "GameObject",
+    "instanceId": {
+        "type": "string"
+    },
+    "type": "object",
+    "objectType": {
+        "type": "string"
+    },
+    "name": {
+        "type": "string"
+    },
+    "mesh": {
+        "type": "string"
+    },
+    "events": {
+        "items": {
+            "$ref": "Event"
+        }
+    },
+    "info": {
+        "type": "object"
+    },
+    "children": {
+        "type": "object",
+        "items": {
+            "$ref": "GameObject"
+        },
+        "default": []
+    },
+    "visible": {
+        "type": "boolean"
+    },
+    "required": ["name"]
+}
