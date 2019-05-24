@@ -14,9 +14,11 @@
         "type": "string"
     },
     "events": {
+        "type": "array",
         "items": {
             "$ref": "Event"
-        }
+        },
+        "default": []
     },
     "info": {
         "type": "object"

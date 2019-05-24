@@ -10,16 +10,20 @@
     "gameObjects ": {
         "type": "array",
         "items": {
-            "$ref": "GameObject"
+            "anyOf": [{
+                "$ref": "GameObject"
+            }, {
+                "type": "string"
+            }]
         },
         "default": []
     },
     "events": {
+        "type": "array",
         "items": {
-            "type": "array",
-            "$ref": "Event",
-            "default": []
-        }
+            "$ref": "Event"
+        },
+        "default": []
     },
     "info": {
         "type": "object"

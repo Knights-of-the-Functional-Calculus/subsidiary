@@ -50,15 +50,22 @@ css3dElement.appendChild(webglCanvas);
 //    create a Plane for THREEx.HtmlMixer       //
 // //////////////////////////////////////////////
 
-const player = ObjectImporter.importGameObject('resources/characters/MainCharacter.json');
-player.camera = camera;
-player.cameraLocked = true;
-player.thread = threads[0];
-ObjectImporter.addToScene(scene, player);
+// TODO: add cameraLocked
+const runtimeContext = {};
+runtimeContext.camera = camera;
+runtimeContext.threads = threads;
+runtimeContext.mixerContext = mixerContext;
 
-const terminal = ObjectImporter.importGameObject('resources/widgets/Terminal.json');
-terminal.mixerContext = mixerContext;
-ObjectImporter.addToScene(scene, terminal);
+// TODO: allow for object
+ObjectImporter.importLevelObject('resources/levels/Level0.json', runtimeContext);
+
+// const player = ObjectImporter.importGameObject('resources/characters/MainCharacter.json');
+// player.cameraLocked = true;
+// ObjectImporter.addToScene(scene, player);
+
+// const terminal = ObjectImporter.importGameObject('resources/widgets/Terminal.json');
+// terminal.mixerContext = mixerContext;
+// ObjectImporter.addToScene(scene, terminal);
 
 // render the webgl
 threads[0].renderWebGL = function() {
