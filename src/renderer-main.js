@@ -1,6 +1,6 @@
-const request = require('request');
 const ObjectImporter = require('./src/game/ObjectImporter.js');
 
+const request = require('request');
 const ipcRenderer = require('electron').ipcRenderer;
 const renderer = new THREE.WebGLRenderer({
     alpha: true,
@@ -55,9 +55,10 @@ const runtimeContext = {};
 runtimeContext.camera = camera;
 runtimeContext.threads = threads;
 runtimeContext.mixerContext = mixerContext;
+runtimeContext.scene = scene;
 
 // TODO: allow for object
-ObjectImporter.importLevelObject('resources/levels/Level0.json', runtimeContext);
+//
 
 // const player = ObjectImporter.importGameObject('resources/characters/MainCharacter.json');
 // player.cameraLocked = true;
@@ -91,24 +92,30 @@ window.addEventListener('resize', onResize, false);
 // //////////////////////////////////
 //    render the scene            //
 // ////////////////////////////////
-let loadEventStore = null;
 
+ipcRenderer.on('reload-event', async(event, store) => {
+    const level = await ObjectImporter.fetchLevel(store.levelRequest);
+    const domObjects = level.domObjects
+    for (var i = domObjects.length - 1; i >= 0; i--) {
 
-ipcRenderer.on('reload-event', (event, store) => {
-    loadEventStore = store;
-    request.head({
-        url: terminal.info.src
-    }, (err, response) => {
-        //TODO: Check to see if this etag is recurring
-        if (response.headers.etag === "W/\"3d4-16acd5f96f8\"") {
-            loadEventStore.dockerDone = true;
-            terminal.domElement.src = terminal.domElement.src;
-            threads[0].renderCss3d = function(delta, now) {
-                // NOTE: it must be after camera mode
-                mixerContext.update(delta, now);
-            };
-        }
-    });
+        request.head({
+            url: domObjects[i].info.src
+        }, (err, response) => {
+            //TODO: Check to see if this etag is recurring
+            if (response.headers.etag === domObjects[i].info.etag) {
+                runtimeContext.dockerDone = runtimeContext.dockerDone || domObjects[i].info.dockerDone;
+
+                // This forces element refresh.
+                domObjects[i].domElement.src = domObjects[i].domElement.src;
+                if (!threads[0].renderDOM3d) {
+                    threads[0].renderDOM3d = function(delta, now) {
+                        // NOTE: it must be after camera mode
+                        mixerContext.update(delta, now);
+                    }
+                }
+            }
+        });
+    }
 });
 
 ipcRenderer.on('load-event', (event, store) => {
@@ -117,11 +124,14 @@ ipcRenderer.on('load-event', (event, store) => {
         console.log('Adding render functions...');
     }
     // render the css3d
-    threads[0].renderCss3d = function(delta, now) {
+    threads[0].renderDOM3d = function(delta, now) {
         // NOTE: it must be after camera mode
         mixerContext.update(delta, now);
     };
-    loadEventStore = store;
+    const levelRequest = {
+        levelName: 'resources/levels/level0.json'
+    }
+    ObjectImporter.importLevelObject(levelRequest, Object.assign(runtimeContext, store));
 });
 // //////////////////////////////
 //    loop runner             //
@@ -142,7 +152,7 @@ function runGame(nowMsec) {
 }
 
 function loading(nowMsec) {
-    if (loadEventStore) {
+    if (runtimeContext.dockerDone) {
         setTimeout(requestAnimationFrame.bind(null, runGame), 20);
     } else {
         setTimeout(requestAnimationFrame.bind(null, loading), 1000);

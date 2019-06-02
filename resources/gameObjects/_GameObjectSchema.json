@@ -26,7 +26,11 @@
     "children": {
         "type": "object",
         "items": {
-            "$ref": "GameObject"
+            "anyOf": [{
+                "$ref": "GameObject"
+            }, {
+                "type": "string"
+            }]
         },
         "default": []
     },

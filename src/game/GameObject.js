@@ -29,4 +29,6 @@ function GameObject(args) {
     this.addEvents(events);
 }
 
+GameObject.prototype.schema = require('../../resources/gameObjects/_GameObjectSchema.json');
+
 module.exports = GameObject;

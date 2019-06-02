@@ -87,6 +87,10 @@ app.once('ready', function() {
         mainWindow.webContents.send('reload-event', {
             dockerDone: true,
             DEV: process.env.DEV,
+            levelRequest: {
+                current: true,
+                levelName: 'resources/levels/level0.json',
+            },
         })
     })
 });
