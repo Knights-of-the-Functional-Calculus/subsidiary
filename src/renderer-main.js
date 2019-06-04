@@ -94,7 +94,13 @@ window.addEventListener('resize', onResize, false);
 // ////////////////////////////////
 
 ipcRenderer.on('reload-event', async(event, store) => {
-    const level = await ObjectImporter.fetchLevel(store.levelRequest);
+    const level = await ObjectImporter.fetchLevel(store.levelRequest).catch(error => {
+        console.error(error);
+    });
+    if (!level) {
+        console.error('Failed to fetch level.');
+        return 1;
+    }
     const domObjects = level.domObjects
     for (var i = domObjects.length - 1; i >= 0; i--) {
 
@@ -131,7 +137,9 @@ ipcRenderer.on('load-event', (event, store) => {
     const levelRequest = {
         levelName: 'resources/levels/level0.json'
     }
-    ObjectImporter.importLevelObject(levelRequest, Object.assign(runtimeContext, store));
+    ObjectImporter.loadLevel(levelRequest, Object.assign(runtimeContext, store)).catch(error => {
+        console.error(error);
+    });
 });
 // //////////////////////////////
 //    loop runner             //

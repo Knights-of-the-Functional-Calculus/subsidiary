@@ -3,6 +3,7 @@ const LevelObject = require('./LevelObject.js');
 const EventFunctions = require('./EventFunctions.js');
 const MeshGenerator = require('./MeshGenerator.js');
 const request = require('request');
+const assert = require('assert');
 
 const Validator = require('jsonschema').Validator;
 const validator = new Validator();
@@ -11,13 +12,15 @@ validator.addSchema(LevelObject.prototype.schema);
 
 exports.importGameObject = function(filename) {
     const object = require(`../../${filename}`);
-	validator.validate('GameObject', object);
+    validator.validate(object, 'Level', {
+        throwError: true
+    });
     EventFunctions.injectEventFunctions(object);
     MeshGenerator.injectMeshGenerator(object);
     return new GameObject(object);
 }
 
-exports.importLevelObject = async function({
+exports.loadLevel = async function({
     levelName,
     url
 }, runtimeContext) {
@@ -27,7 +30,11 @@ exports.importLevelObject = async function({
     } else {
         object = require(`../../${levelName}`);
     }
-	console.log(validator.validate(object, 'Level'));
+
+    validator.validate(object, 'Level', {
+        throwError: true
+    });
+
     EventFunctions.injectEventFunctions(object);
     for (var i = object.gameObjects.length - 1; i >= 0; i--) {
         if (typeof(object.gameObjects[i]) === 'string') {
@@ -51,9 +58,12 @@ exports.fetchLevel = async function({
     url
 }, runtimeContext) {
     if (current && this.levelCache[this.currentLevel]) {
-    	return this.levelCache[this.currentLevel];
+        return this.levelCache[this.currentLevel];
     }
-    return this.levelCache[levelName] || await this.importLevelObject({levelName, url}, runtimeContext);
+    return this.levelCache[levelName] || await this.loadLevel({
+        levelName,
+        url
+    }, runtimeContext);
 }
 
 exports.addToScene = function(scene, actor) {
