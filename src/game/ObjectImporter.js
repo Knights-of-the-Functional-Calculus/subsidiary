@@ -40,9 +40,10 @@ exports.loadLevel = async function({
         if (typeof(object.gameObjects[i]) === 'string') {
             object.gameObjects[i] = exports.importGameObject(object.gameObjects[i]);
         }
-        ObjectImporter.addToScene(runtimeContext.scene, object.gameObjects[i]);
     }
-    const level = new LevelObject(object);
+
+    runtimeContext.addToScene = this.addToScene.bind(this, runtimeContext.scene);
+    const level = new LevelObject(object, runtimeContext);
     if (!this.currentLevel) {
         this.currentLevel = level.name;
     }

@@ -94,7 +94,7 @@ window.addEventListener('resize', onResize, false);
 // ////////////////////////////////
 
 ipcRenderer.on('reload-event', async(event, store) => {
-    const level = await ObjectImporter.fetchLevel(store.levelRequest).catch(error => {
+    const level = await ObjectImporter.fetchLevel(store.levelRequest, runtimeContext).catch(error => {
         console.error(error);
     });
     if (!level) {
@@ -108,6 +108,10 @@ ipcRenderer.on('reload-event', async(event, store) => {
             url: domObjects[i].info.src
         }, (err, response) => {
             //TODO: Check to see if this etag is recurring
+            if (err) {
+                console.log(err);
+                return;
+            }
             if (response.headers.etag === domObjects[i].info.etag) {
                 runtimeContext.dockerDone = runtimeContext.dockerDone || domObjects[i].info.dockerDone;
 
@@ -135,7 +139,7 @@ ipcRenderer.on('load-event', (event, store) => {
         mixerContext.update(delta, now);
     };
     const levelRequest = {
-        levelName: 'resources/levels/level0.json'
+        levelName: 'resources/levels/levelalpha.json'
     }
     ObjectImporter.loadLevel(levelRequest, Object.assign(runtimeContext, store)).catch(error => {
         console.error(error);

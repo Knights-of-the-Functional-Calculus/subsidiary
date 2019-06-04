@@ -1,5 +1,6 @@
 {
     "name": "MainCharacter",
+    "instanceId": "main_character",
     "mesh": "circle",
     "events": [{
         "name": "Movement",

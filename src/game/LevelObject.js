@@ -1,10 +1,10 @@
-function LevelObject(args) {
+function LevelObject(kwargs, runtimeContext) {
     const {
         name,
         gameObjects,
         events,
         info,
-    } = args;
+    } = kwargs;
     this.name = name;
     this.info = info;
     this.gameObjects = [];
@@ -14,11 +14,12 @@ function LevelObject(args) {
         for (var i = gameObjects.length - 1; i >= 0; i--) {
             if (gameObjects[i].info && gameObjects[i].info.isDOM) {
                 gameObjects[i].mixerContext = runtimeContext.mixerContext;
+                runtimeContext.addToScene(gameObjects[i]);
                 this.domObjects.push(gameObjects[i]);
             } else {
                 this.gameObjects.push(gameObjects[i]);
             }
-            if (!gameObject.instanceId) {
+            if (!gameObjects[i].instanceId) {
                 gameObjects[i].instanceId = this.numObjects;
             }
             if (this.info && this.info.cameraLocked &&
@@ -40,6 +41,7 @@ function LevelObject(args) {
         });
     }
     this.addEvents(events);
+    this.initializeGameObjects(gameObjects, runtimeContext);
 }
 LevelObject.prototype.schema = require('../../resources/levels/_LevelSchema.json');
 
