@@ -1,0 +1,8 @@
+{
+	"name": "LevelAlpha",
+    "gameObjects": ["resources/gameObjects/characters/MainCharacter.json", "resources/gameObjects/widgets/Terminal.json"],
+    "events": [],
+    "info": {
+    	"cameraLocked": "main_character"
+    }
+}
