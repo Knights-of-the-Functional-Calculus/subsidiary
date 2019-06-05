@@ -56,6 +56,7 @@ runtimeContext.camera = camera;
 runtimeContext.threads = threads;
 runtimeContext.mixerContext = mixerContext;
 runtimeContext.scene = scene;
+runtimeContext.threads = threads;
 
 // TODO: allow for object
 //
@@ -102,8 +103,7 @@ ipcRenderer.on('reload-event', async(event, store) => {
         return 1;
     }
     const domObjects = level.domObjects
-    for (var i = domObjects.length - 1; i >= 0; i--) {
-
+    for (let i = domObjects.length - 1; i >= 0; i--) {
         request.head({
             url: domObjects[i].info.src
         }, (err, response) => {
@@ -114,7 +114,6 @@ ipcRenderer.on('reload-event', async(event, store) => {
             }
             if (response.headers.etag === domObjects[i].info.etag) {
                 runtimeContext.dockerDone = runtimeContext.dockerDone || domObjects[i].info.dockerDone;
-
                 // This forces element refresh.
                 domObjects[i].domElement.src = domObjects[i].domElement.src;
                 if (!threads[0].renderDOM3d) {

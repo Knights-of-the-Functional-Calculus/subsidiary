@@ -5,7 +5,7 @@
         "name": "Toggle",
         "func": "toggle",
         "capture": true,
-        "type": "keydown"
+        "eventType": "keydown"
     }],
     "info": {
         "isDOM" : true,

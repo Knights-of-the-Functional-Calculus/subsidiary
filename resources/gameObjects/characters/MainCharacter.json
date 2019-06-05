@@ -6,7 +6,7 @@
         "name": "Movement",
         "func": "wasd",
         "capture": false,
-        "type": "keydown"
+        "eventType": "keydown"
     }],
     "info": {
     	"movement": {

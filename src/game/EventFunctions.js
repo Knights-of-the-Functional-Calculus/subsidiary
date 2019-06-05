@@ -2,13 +2,14 @@ const keycode = require('keycode');
 
 exports.injectEventFunctions = function(target) {
     for (var i = target.events.length - 1; i >= 0; i--) {
+        console.log(`Injecting ${target.events[i]['func'] } into ${this}`);
         target.events[i]['func'] = this[target.events[i]['func']];
     }
 }
 
 const lerpFunc = function(delta) {
     if (this.c >= 1) {
-        delete this.gameObject.thread[`lerp${self.name}`];
+        delete this.gameObject.thread[`lerp${this.gameObject.name}`];
         this.gameObject.state = 'idle';
     }
     this.a = this.gameObject.mesh.position[this.axis];
@@ -67,5 +68,5 @@ exports.wasd = function(event) {
             break;
     }
     context.gameObject = this;
-    this.thread[`lerp${self.name}`] = lerpFunc.bind(context);
+    this.thread[`lerp${this.name}`] = lerpFunc.bind(context);
 }

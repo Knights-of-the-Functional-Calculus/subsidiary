@@ -1,32 +1,34 @@
 {
-    "id": "Level",
-    "instanceId": {
-        "type": "string"
-    },
+    "id": "/Level",
     "type": "object",
-    "name": {
-        "type": "string"
-    },
-    "gameObjects": {
-        "type": "array",
-        "items": {
-            "anyOf": [{
-                "$ref": "GameObject"
-            }, {
-                "type": "string"
-            }]
+    "properties": {
+        "instanceId": {
+            "type": "string"
         },
-        "default": []
-    },
-    "events": {
-        "type": "array",
-        "items": {
-            "$ref": "Event"
+        "name": {
+            "type": "string"
         },
-        "default": []
-    },
-    "info": {
-        "type": "object"
+        "gameObjects": {
+            "type": "array",
+            "items": {
+                "anyOf": [{
+                    "$ref": "/GameObject#"
+                }, {
+                    "type": "string"
+                }]
+            },
+            "default": []
+        },
+        "events": {
+            "type": "array",
+            "items": {
+                "$ref": "/Event"
+            },
+            "default": []
+        },
+        "info": {
+            "type": "object"
+        }
     },
     "required": ["name"]
 }
