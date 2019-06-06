@@ -1,8 +1,9 @@
+const debug = require('debug')(__filename);
 const keycode = require('keycode');
 
 exports.injectEventFunctions = function(target) {
     for (var i = target.events.length - 1; i >= 0; i--) {
-        console.log(`Injecting ${target.events[i]['func'] } into ${this}`);
+        debug(`Injecting ${target.events[i]['func'] } into ${this}`);
         target.events[i]['func'] = this[target.events[i]['func']];
     }
 }

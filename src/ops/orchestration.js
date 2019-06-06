@@ -1,7 +1,9 @@
+const debug = require('debug')(__filename);
+
 const compose = require('docker-compose');
 
 function rawPrint(output) {
-  console.log(String.raw`${output.err}`);
+  debug(String.raw`${output.err}`);
 }
 
 exports.runContainer = function(container, options = {}) {

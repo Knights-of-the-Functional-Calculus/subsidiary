@@ -21,7 +21,6 @@ function Level(kwargs, runtimeContext) {
 
             runtimeContext.addToScene(gameObjects[i]);
 
-            console.log(gameObjects[i])
             if (!gameObjects[i].instanceId) {
                 gameObjects[i].instanceId = this.numObjects;
             }
@@ -45,7 +44,6 @@ function Level(kwargs, runtimeContext) {
     }
     this.addEvents(events);
     this.initializeGameObjects(gameObjects, runtimeContext);
-    console.log(this)
 }
 Level.prototype.schema = require('../../resources/levels/_LevelSchema.json');
 

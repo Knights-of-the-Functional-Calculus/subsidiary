@@ -1,6 +1,9 @@
 const GameObject = require('./GameObject.js');
 const Level = require('./Level.js');
 const EventFunctions = require('./EventFunctions.js');
+const debug = require('debug')(__filename);
+debug.enabled = '*'
+
 const MeshGenerator = require('./MeshGenerator.js');
 const request = require('request');
 const assert = require('assert');
@@ -18,6 +21,7 @@ exports.importGameObject = function(filename) {
     });
     EventFunctions.injectEventFunctions(object);
     MeshGenerator.injectMeshGenerator(object);
+    debug(`${object.name} imported`);
     return new GameObject(object);
 }
 
@@ -56,7 +60,7 @@ exports.loadLevel = async function({
         this.currentLevel = level.name;
     }
     this.levelCache[level.name] = level;
-    console.log(level)
+    debug(`${level.name} loaded`);
     return level;
 }
 
@@ -77,7 +81,7 @@ exports.fetchLevel = async function({
 }
 
 exports.addToScene = function(scene, actor) {
-    console.log(actor);
+    debug(`${actor.name} added to ${scene}`);
     if (typeof actor.mesh === 'function')
         scene.add(actor.mesh());
     else

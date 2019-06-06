@@ -1,3 +1,6 @@
+const debug = require('debug')(__filename);
+const error = require('debug')(`${__filename}:error`);
+
 const ObjectImporter = require('./src/game/ObjectImporter.js');
 
 const request = require('request');
@@ -95,11 +98,11 @@ window.addEventListener('resize', onResize, false);
 // ////////////////////////////////
 
 ipcRenderer.on('reload-event', async(event, store) => {
-    const level = await ObjectImporter.fetchLevel(store.levelRequest, runtimeContext).catch(error => {
-        console.error(error);
+    const level = await ObjectImporter.fetchLevel(store.levelRequest, runtimeContext).catch(err => {
+        error(err);
     });
     if (!level) {
-        console.error('Failed to fetch level.');
+        error('Failed to fetch level.');
         return 1;
     }
     const domObjects = level.domObjects
@@ -109,7 +112,7 @@ ipcRenderer.on('reload-event', async(event, store) => {
         }, (err, response) => {
             //TODO: Check to see if this etag is recurring
             if (err) {
-                console.log(err);
+                error(err);
                 return;
             }
             if (response.headers.etag === domObjects[i].info.etag) {
@@ -130,7 +133,7 @@ ipcRenderer.on('reload-event', async(event, store) => {
 ipcRenderer.on('load-event', (event, store) => {
     process.env.DEV = store.DEV;
     if (process.env.DEV) {
-        console.log('Adding render functions...');
+        debug('Adding render functions...');
     }
     // render the css3d
     threads[0].renderDOM3d = function(delta, now) {
@@ -140,8 +143,8 @@ ipcRenderer.on('load-event', (event, store) => {
     const levelRequest = {
         levelName: 'resources/levels/levelalpha.json'
     }
-    ObjectImporter.loadLevel(levelRequest, Object.assign(runtimeContext, store)).catch(error => {
-        console.error(error);
+    ObjectImporter.loadLevel(levelRequest, Object.assign(runtimeContext, store)).catch(err => {
+        error(err);
     });
 });
 // //////////////////////////////
