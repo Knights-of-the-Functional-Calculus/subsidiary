@@ -1,5 +1,7 @@
-const debug = require('debug')(__filename);
-const error = require('debug')(`${__filename}:error`);
+const path = require('path');
+const debug = require('debug')(path.basename(__filename));
+const error = require('debug')(`${path.basename(__filename)}:error`);
+debug.enabled = '*'
 
 const ObjectImporter = require('./src/game/ObjectImporter.js');
 
@@ -53,7 +55,6 @@ css3dElement.appendChild(webglCanvas);
 //    create a Plane for THREEx.HtmlMixer       //
 // //////////////////////////////////////////////
 
-// TODO: add cameraLocked
 const runtimeContext = {};
 runtimeContext.camera = camera;
 runtimeContext.threads = threads;
@@ -61,16 +62,6 @@ runtimeContext.mixerContext = mixerContext;
 runtimeContext.scene = scene;
 runtimeContext.threads = threads;
 
-// TODO: allow for object
-//
-
-// const player = ObjectImporter.importGameObject('resources/characters/MainCharacter.json');
-// player.cameraLocked = true;
-// ObjectImporter.addToScene(scene, player);
-
-// const terminal = ObjectImporter.importGameObject('resources/widgets/Terminal.json');
-// terminal.mixerContext = mixerContext;
-// ObjectImporter.addToScene(scene, terminal);
 
 // render the webgl
 threads[0].renderWebGL = function() {

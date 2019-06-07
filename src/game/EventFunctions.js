@@ -1,4 +1,5 @@
-const debug = require('debug')(__filename);
+const path = require('path');
+const debug = require('debug')(path.basename(__filename));
 const keycode = require('keycode');
 
 exports.injectEventFunctions = function(target) {

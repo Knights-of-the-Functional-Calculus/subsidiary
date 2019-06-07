@@ -1,8 +1,8 @@
 const GameObject = require('./GameObject.js');
 const Level = require('./Level.js');
 const EventFunctions = require('./EventFunctions.js');
-const debug = require('debug')(__filename);
-debug.enabled = '*'
+const path = require('path');
+const debug = require('debug')(path.basename(__filename));
 
 const MeshGenerator = require('./MeshGenerator.js');
 const request = require('request');
