@@ -2,8 +2,9 @@ version: "3.5"
 
 services:
   wetty:
-    build: .
-    image: butlerx/wetty
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: 'wetty'
     tty: true
     working_dir: /app
