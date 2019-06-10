@@ -2,8 +2,8 @@
     "name": "Terminal",
     "mesh": "iframe",
     "events": [{
-        "name": "Toggle",
-        "func": "toggle",
+        "name": "ToggleVisibility",
+        "func": "toggleVisibility",
         "capture": true,
         "eventType": "keydown"
     }],
