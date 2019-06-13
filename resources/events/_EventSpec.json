@@ -1,18 +1,20 @@
 {
     "id": "/Event",
     "type": "object",
-    "name": {
-        "type": "string"
-    },
-    "eventType": {
-        "type": "string"
-    },
-    "func": {
-        "type": "string"
-    },
-    "capture": {
-        "type": "boolean",
-        "default": false
+    "properties": {
+        "name": {
+            "type": "string"
+        },
+        "eventType": {
+            "type": "string"
+        },
+        "func": {
+            "type": "string"
+        },
+        "capture": {
+            "type": "boolean",
+            "default": false
+        }
     },
     "required": ["name", "eventType", "func"]
 }

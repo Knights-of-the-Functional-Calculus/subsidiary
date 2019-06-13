@@ -41,7 +41,6 @@ exports.loadLevel = async function({
     });
 
     EventFunctions.injectEventFunctions(object);
-
     for (var i = object.gameObjects.length - 1; i >= 0; i--) {
         if (typeof(object.gameObjects[i]) === 'string') {
             object.gameObjects[i] = this.importGameObject(object.gameObjects[i]);

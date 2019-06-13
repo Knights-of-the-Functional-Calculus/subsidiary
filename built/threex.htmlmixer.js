@@ -190,4 +190,4 @@ THREEx.HtmlMixer.Plane = function(mixerContext, domElement, opts) {
 	})
 };
 
-
+module.exports = THREEx;

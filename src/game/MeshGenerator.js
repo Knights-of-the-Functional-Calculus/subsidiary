@@ -1,5 +1,5 @@
 exports.injectMeshGenerator = function(target) {
-    target.mesh = this[target.mesh];
+    target.mesh = this[target.mesh] || (() => {});
 }
 
 exports.circle = function() {

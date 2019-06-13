@@ -1,4 +1,6 @@
-function GameObject(args) {
+const EventFunctions = require('./EventFunctions.js')
+
+function GameObject(kwargs) {
     const {
     	name,
         instanceId,
@@ -9,7 +11,7 @@ function GameObject(args) {
         children,
         visible,
         camera,
-    } = args;
+    } = kwargs;
     this.name = name;
     this.instanceId = instanceId;
     this.type = objectType;
@@ -18,18 +20,7 @@ function GameObject(args) {
     this.children = children;
     this.visible =  visible === undefined || visible;
 
-	 this.addEvents = (events) => {
-	    events.forEach(({
-	        eventType,
-	        func,
-	        capture
-	    }) => {
-	        func = func.bind(this);
-	        document.addEventListener(eventType, func, capture);
-	    });
-	}
-
-    this.addEvents(events);
+    events.forEach(EventFunctions.addEvent.bind(this));
 }
 
 GameObject.prototype.schema = require('../../resources/gameObjects/_GameObjectSchema.json');

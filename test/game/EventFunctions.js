@@ -4,27 +4,10 @@ const keycode = require('keycode');
 const sinon = require('sinon');
 
 THREE = require('../mocks/mockTHREE.js');
-
+jsf.option('alwaysFakeOptionals', true);
 // const GameObject 
 const EventFunctions = require('../../src/game/EventFunctions.js');
-const eventSpec = {
-    "id": "Event",
-    "type": "object",
-    "name": {
-        "type": "string"
-    },
-    "eventType": {
-        "type": "string"
-    },
-    "func": {
-        "type": "string"
-    },
-    "capture": {
-        "type": "boolean",
-        "default": false
-    },
-    "required": ["name", "eventType", "func"]
-}
+const eventSpec = require('../../resources/events/_EventSpec.json');
 
 describe('EventFunctions.js', () => {
     describe('injectEventsFunctions', () => {
@@ -32,9 +15,9 @@ describe('EventFunctions.js', () => {
         before(() => {
             target = {};
             target.events = [];
-            target.events.push(eventSpec);
-            target.events.push(eventSpec);
-            target.events.push(eventSpec);
+            target.events.push(jsf.generate(eventSpec));
+            target.events.push(jsf.generate(eventSpec));
+            target.events.push(jsf.generate(eventSpec));
         });
         it('should check that function names are replaced with functions', () => {
             EventFunctions.injectEventFunctions(target);

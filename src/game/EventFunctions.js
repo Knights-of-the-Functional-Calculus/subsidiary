@@ -1,7 +1,7 @@
 const path = require('path');
 const debug = require('debug')(path.basename(__filename));
 const keycode = require('keycode');
-exports.schema = require('../../resources/gameObjects/_GameObjectSchema.json');
+exports.schema = require('../../resources/events/_EventSpec.json');
 const Validator = require('jsonschema').Validator;
 const validator = new Validator();
 validator.addSchema(exports.schema);
@@ -9,16 +9,24 @@ validator.addSchema(exports.schema);
 exports.injectEventFunctions = function(target) {
     for (var i = target.events.length - 1; i >= 0; i--) {
         debug(`Injecting ${target.events[i]['func'] } into ${this}`);
-        if (this[target.events[i]['func']]) {
-            validator.validate(this[target.events[i]['func']], '/Event', {
-                throwError: true
-            })
+        if (this[target.events[i]['func']] && typeof target.events[i]['func'] === 'string') {
+             // TODO: This is buggy, hangs
+             validator.validate(target.events[i], '/Event');
             target.events[i]['func'] = this[target.events[i]['func']];
-        } else {
+        }  else {
             target.events[i]['func'] = () => {};
         }
     }
 }
+
+exports.addEvent = function({
+        eventType,
+        func,
+        capture
+    }) {
+        func = func.bind(this);
+        document.addEventListener(eventType, func, capture);
+    }
 
 exports.toggleVisibility = function(event) {
     const keyCode = event.which;

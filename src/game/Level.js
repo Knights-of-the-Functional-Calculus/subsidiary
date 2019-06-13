@@ -1,3 +1,5 @@
+const EventFunctions = require('./EventFunctions.js')
+
 function Level(kwargs, runtimeContext) {
     const {
         name,
@@ -32,17 +34,7 @@ function Level(kwargs, runtimeContext) {
         }
     }
 
-    this.addEvents = (events) => {
-        events.forEach(({
-            eventType,
-            func,
-            capture
-        }) => {
-            func = func.bind(this);
-            document.addEventListener(eventType, func, capture);
-        });
-    }
-    this.addEvents(events);
+    events.forEach(EventFunctions.addEvent.bind(this));
     this.initializeGameObjects(gameObjects, runtimeContext);
 }
 Level.prototype.schema = require('../../resources/levels/_LevelSchema.json');
