@@ -5,11 +5,7 @@ const sinon = require('sinon');
 THREE = require('../../built/three.min.js');
 CSS3DObject = require('../../built/CSS3DRenderer.js');
 THREEx = require('../../built/threex.htmlmixer.js');
-document = {
-    createElement: () => {
-        return {}
-    }
-};
+document = {};
 // const GameObject 
 const MeshGenerator = require('../../src/game/MeshGenerator.js');
 
@@ -45,6 +41,10 @@ describe('MeshGenerator.js', () => {
         const meshName = 'iframe';
         let context, meshFunction;
         beforeEach(() => {
+            document = {};
+            document.createElement = () => {
+                return {};
+            }
             context = {};
             context.visible = true;
             context.mixerContext = {

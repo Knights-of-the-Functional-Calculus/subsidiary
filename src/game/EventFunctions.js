@@ -10,23 +10,23 @@ exports.injectEventFunctions = function(target) {
     for (var i = target.events.length - 1; i >= 0; i--) {
         debug(`Injecting ${target.events[i]['func'] } into ${this}`);
         if (this[target.events[i]['func']] && typeof target.events[i]['func'] === 'string') {
-             // TODO: This is buggy, hangs
-             validator.validate(target.events[i], '/Event');
+            // TODO: This is buggy, hangs
+            validator.validate(target.events[i], '/Event');
             target.events[i]['func'] = this[target.events[i]['func']];
-        }  else {
+        } else {
             target.events[i]['func'] = () => {};
         }
     }
 }
 
 exports.addEvent = function({
-        eventType,
-        func,
-        capture
-    }) {
-        func = func.bind(this);
-        document.addEventListener(eventType, func, capture);
-    }
+    eventType,
+    func,
+    capture
+}) {
+    func = func.bind(this);
+    document.addEventListener(eventType, func, capture);
+}
 
 exports.toggleVisibility = function(event) {
     const keyCode = event.which;

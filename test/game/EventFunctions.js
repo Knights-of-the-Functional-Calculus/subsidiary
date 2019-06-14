@@ -9,6 +9,8 @@ jsf.option('alwaysFakeOptionals', true);
 const EventFunctions = require('../../src/game/EventFunctions.js');
 const eventSpec = require('../../resources/events/_EventSpec.json');
 
+document = {};
+
 describe('EventFunctions.js', () => {
     describe('injectEventsFunctions', () => {
         let target;
@@ -19,9 +21,38 @@ describe('EventFunctions.js', () => {
             target.events.push(jsf.generate(eventSpec));
             target.events.push(jsf.generate(eventSpec));
         });
-        it('should check that function names are replaced with functions', () => {
+        it('should replace function names with functions', () => {
             EventFunctions.injectEventFunctions(target);
             target.events.forEach(event => expect(event.func).to.be.a('function'));
+        });
+    });
+
+    describe('addEvent', () => {
+        let context, dummyFunc, addEvent;
+        const eventName = 'addEvent';
+        beforeEach(() => {
+            document = {};
+            document.addEventListener = (eventType, func, capture) => {
+                document.eventType = eventType;
+                document.func = func;
+                document.capture = capture;
+            }
+            context = {};
+            context.foo = 'bar';
+            dummyFunc = function() {
+                expect(this).to.deep.equal(context);
+            }
+            addEvent = EventFunctions[eventName].bind(context);
+        });
+        it('should bind the context to the event function and add an event to the document', () => {
+            addEvent({
+                eventType: 'foo',
+                func: dummyFunc,
+                capture: true
+            });
+
+            document.func();
+           expect( document.capture).to.be.true;
         });
     });
 
@@ -35,7 +66,7 @@ describe('EventFunctions.js', () => {
                 traverse: sinon.spy()
             };
             context.domElement = {};
-            eventFunction = EventFunctions['toggleVisibility'].bind(context);
+            eventFunction = EventFunctions[eventName].bind(context);
         });
 
         it('should toggle the visibility of a game object', () => {
@@ -71,7 +102,7 @@ describe('EventFunctions.js', () => {
                 y: 0
             };
             context.thread = {};
-            eventFunction = EventFunctions['wasd'].bind(context);
+            eventFunction = EventFunctions[eventName].bind(context);
         });
 
         it('should do nothing if the game object is already moving', () => {
@@ -98,7 +129,7 @@ describe('EventFunctions.js', () => {
             while (context.thread[`lerp${context.name}`]) {
                 context.thread[`lerp${context.name}`](timestep);
                 t += timestep * 15;
-                currentPosition.y = (1- t)  * currentPosition.y + movementUnit * t;
+                currentPosition.y = (1 - t) * currentPosition.y + movementUnit * t;
                 expect(context.mesh.position).to.deep.equal(currentPosition);
             }
         });
@@ -118,7 +149,7 @@ describe('EventFunctions.js', () => {
             while (context.thread[`lerp${context.name}`]) {
                 context.thread[`lerp${context.name}`](timestep);
                 t += timestep * 15;
-                currentPosition.x = (1- t)  * currentPosition.x - movementUnit * t;
+                currentPosition.x = (1 - t) * currentPosition.x - movementUnit * t;
                 expect(context.mesh.position).to.deep.equal(currentPosition);
             }
         });
@@ -138,7 +169,7 @@ describe('EventFunctions.js', () => {
             while (context.thread[`lerp${context.name}`]) {
                 context.thread[`lerp${context.name}`](timestep);
                 t += timestep * 15;
-                currentPosition.y = (1- t)  * currentPosition.y - movementUnit * t;
+                currentPosition.y = (1 - t) * currentPosition.y - movementUnit * t;
                 expect(context.mesh.position).to.deep.equal(currentPosition);
             }
         });
@@ -158,7 +189,7 @@ describe('EventFunctions.js', () => {
             while (context.thread[`lerp${context.name}`]) {
                 context.thread[`lerp${context.name}`](timestep);
                 t += timestep * 15;
-                currentPosition.x = (1- t)  * currentPosition.x + movementUnit * t;
+                currentPosition.x = (1 - t) * currentPosition.x + movementUnit * t;
                 expect(context.mesh.position).to.deep.equal(currentPosition);
             }
         });
