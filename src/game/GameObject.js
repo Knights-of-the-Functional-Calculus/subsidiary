@@ -10,7 +10,6 @@ function GameObject(kwargs) {
         mesh,
         children,
         visible,
-        camera,
     } = kwargs;
     this.name = name;
     this.instanceId = instanceId;

@@ -1,7 +1,8 @@
 const expect = require('chai').expect;
+const sinon = require('sinon');
+
 const jsf = require('json-schema-faker');
 const keycode = require('keycode');
-const sinon = require('sinon');
 
 THREE = require('../mocks/mockTHREE.js');
 jsf.option('alwaysFakeOptionals', true);

@@ -1,6 +1,7 @@
 const expect = require('chai').expect;
-const keycode = require('keycode');
 const sinon = require('sinon');
+
+const keycode = require('keycode');
 
 THREE = require('../../built/three.min.js');
 CSS3DObject = require('../../built/CSS3DRenderer.js');

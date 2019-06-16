@@ -1,6 +1,12 @@
 const EventFunctions = require('./EventFunctions.js');
 
-function initializeGameObjects(gameObjects, runtimeContext) {
+function _setCameraFocus(gameObject) {
+    if (this.info && this.info.cameraLocked === gameObject.instanceId) {
+        gameObject.cameraLocked = true;
+    }
+}
+
+function _initializeGameObjects(runtimeContext, gameObjects) {
     for (var i = gameObjects.length - 1; i >= 0; i--) {
         if (gameObjects[i].info && gameObjects[i].info.isDOM) {
             gameObjects[i].mixerContext = runtimeContext.mixerContext;
@@ -12,11 +18,8 @@ function initializeGameObjects(gameObjects, runtimeContext) {
         runtimeContext.addToScene(gameObjects[i]);
 
         gameObjects[i].instanceId || (gameObjects[i].instanceId = this.numObjects);
+        _setCameraFocus.call(this, gameObjects[i]);
 
-        if (this.info && this.info.cameraLocked &&
-            this.info.cameraLocked === gameObjects[i].instanceId) {
-            gameObjects[i].cameraLocked = true;
-        }
         this.numObjects++;
     }
 }
@@ -33,11 +36,11 @@ function Level(kwargs, runtimeContext) {
     this.gameObjects = [];
     this.domObjects = [];
     this.numObjects = 0;
-
     events.forEach(EventFunctions.addEvent.bind(this));
-    initializeGameObjects.call(this, gameObjects, runtimeContext);
+    _initializeGameObjects.call(this, runtimeContext, gameObjects);
 }
 Level.prototype.schema = require('../../resources/levels/_LevelSchema.json');
-Level.prototype.initializeGameObjects = initializeGameObjects;
+Level.prototype.setCameraFocus = _setCameraFocus;
+Level.prototype.initializeGameObjects = _initializeGameObjects;
 
 module.exports = Level;
