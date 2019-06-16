@@ -1,4 +1,4 @@
-const EventFunctions = require('./EventFunctions.js')
+const EventFunctions = require('./EventFunctions.js');
 
 function initializeGameObjects(gameObjects, runtimeContext) {
     for (var i = gameObjects.length - 1; i >= 0; i--) {
@@ -11,7 +11,7 @@ function initializeGameObjects(gameObjects, runtimeContext) {
 
         runtimeContext.addToScene(gameObjects[i]);
 
-        gameObjects[i].instanceId || gameObjects[i].instanceId = this.numObjects;
+        gameObjects[i].instanceId || (gameObjects[i].instanceId = this.numObjects);
 
         if (this.info && this.info.cameraLocked &&
             this.info.cameraLocked === gameObjects[i].instanceId) {
