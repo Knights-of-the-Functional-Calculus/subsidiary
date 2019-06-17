@@ -8,7 +8,8 @@ mockery.enable({
 
 
 const sandbox = sinon.sandbox.create();
-mockery.registerMock('./EventFunctions.js', require('../mocks/mockEventFunctions.js')(sandbox));
+const mockEventFunctions = require('../mocks/mockEventFunctions.js')(sandbox);
+mockery.registerMock('./EventFunctions.js', mockEventFunctions);
 
 const Level = require('../../src/game/Level.js');
 
@@ -101,15 +102,19 @@ describe('Level.js', () => {
                 name: 'foo',
                 gameObjects: [],
                 events: [{}],
-                info: 'bar'
+                info: {
+                    bar: 'baz'
+                }
             };
 
             const level = new Level(kwargs);
             expect(level.name).to.equal(kwargs.name);
-            expect(level.info).to.equal(kwargs.info);
+            expect(level.info).to.deep.equal(kwargs.info);
             expect(level.gameObjects).to.deep.equal([]);
             expect(level.domObjects).to.deep.equal([]);
             expect(level.numObjects).to.equal(kwargs.gameObjects.length);
+
+            expect(mockEventFunctions.addEvent.callCount).to.equal(kwargs.events.length);
         });
     });
 });

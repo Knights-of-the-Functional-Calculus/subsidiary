@@ -14,6 +14,8 @@ validator.addSchema(GameObject.prototype.schema);
 validator.addSchema(Level.prototype.schema);
 validator.addSchema(require('../../resources/events/_EventSpec.json'));
 
+exports.validator = validator;
+
 exports.importGameObject = function(filename) {
     const object = require(`../../${filename}`);
     validator.validate(object, '/GameObject', {

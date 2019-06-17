@@ -2,9 +2,9 @@ const EventFunctions = require('./EventFunctions.js')
 
 function GameObject(kwargs) {
     const {
-    	name,
+        name,
         instanceId,
-    	objectType,
+        objectType,
         events,
         info,
         mesh,
@@ -17,7 +17,7 @@ function GameObject(kwargs) {
     this.mesh = mesh.bind(this);
     this.info = info;
     this.children = children;
-    this.visible =  visible === undefined || visible;
+    this.visible = visible === undefined || visible;
 
     events.forEach(EventFunctions.addEvent.bind(this));
 }
