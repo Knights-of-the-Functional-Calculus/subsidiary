@@ -1,5 +1,6 @@
 module.exports = sandbox => {
     return {
-        addEvent: sandbox.spy()
+        addEvent: sandbox.spy(),
+        injectEventFunctions: sandbox.spy()
     }
 }

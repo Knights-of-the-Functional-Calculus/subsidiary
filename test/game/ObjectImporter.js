@@ -6,14 +6,42 @@ mockery.enable({
     warnOnUnregistered: false
 });
 
-const MeshGenerator = require('../../src/game/ObjectImporter.js');
+const sandbox = sinon.sandbox.create();
+const mockMeshGenerator = require('../mocks/mockMeshGenerator.js')(sandbox);
+mockery.registerMock('./MeshGenerator.js', mockMeshGenerator);
 
+const mockEventFunctions = require('../mocks/mockEventFunctions.js')(sandbox);
+mockery.registerMock('./EventFunctions.js', mockEventFunctions);
+
+const mockGameObject = require('../mocks/mockGameObject.js');
+mockery.registerMock('./GameObject.js', mockGameObject);
+
+
+const ObjectImporter = require('../../src/game/ObjectImporter.js');
 
 describe('ObjectImporter.js', () => {
     describe('importGameObject', () => {
+        let objectImporterFunction;
+
+        before(() => {
+            objectImporterFunction = ObjectImporter.importGameObject;
+            sandbox.replace(ObjectImporter.validator, 'validate', sandbox.fake());
+        });
 
         it('should validate a game object meta initialize the object', () => {
+            const result = objectImporterFunction('resources/gameObjects/characters/MainCharacter.json');
+            expect(ObjectImporter.validator.validate.calledOnce).to.be.true;
+            expect(mockMeshGenerator.injectMeshGenerator.calledOnce).to.be.true;
+            expect(mockEventFunctions.injectEventFunctions.calledOnce).to.be.true;
+            expect(result.mock).to.be.true;
+        });
 
+        afterEach(() => {
+            sandbox.reset();
+        });
+
+        after(() => {
+            sandbox.restore();
         });
     });
 
