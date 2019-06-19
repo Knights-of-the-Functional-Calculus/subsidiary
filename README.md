@@ -34,5 +34,5 @@ npm dev # For full view
 yarn dev 
 ```
 
-# Special Thanks
+## Special Thanks
 [jeromeetienne](https://github.com/jeromeetienne/threex.htmlmixer/blob/master/examples/basic.html)
