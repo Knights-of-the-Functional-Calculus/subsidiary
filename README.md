@@ -17,11 +17,18 @@ git clone --recurse-submodules https://github.com/j4qfrost/subsidiary.git
 
 ```bash
 npm install
-npm dev # For debugging
 npm start # For full view
-
 # OR
 yarn install
-yarn dev 
 yarn start
+```
+
+If you plan on developing, you may want to set up the .env file and run the dev command.
+
+```bash
+cp .env-dist .env
+
+npm dev # For full view
+# OR
+yarn dev 
 ```
