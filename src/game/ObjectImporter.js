@@ -5,7 +5,7 @@ const path = require('path');
 const debug = require('debug')(path.basename(__filename));
 
 const MeshGenerator = require('./MeshGenerator.js');
-const request = require('request');
+const request = require('request-promise-native');
 const assert = require('assert');
 
 const Validator = require('jsonschema').Validator;
@@ -33,15 +33,17 @@ exports.loadLevel = async function({
 }, runtimeContext) {
     let object;
     if (url) {
-        object = await request.get(url);
+        object = await request({
+            uri: url,
+            json: true
+        });
     } else {
-        object = require(`../../${levelName}`);
+        object = require(path.join('../../resources/levels/', `${levelName}.json`));
     }
 
     validator.validate(object, '/Level', {
         throwError: true
     });
-
     EventFunctions.injectEventFunctions(object);
     for (var i = object.gameObjects.length - 1; i >= 0; i--) {
         if (typeof(object.gameObjects[i]) === 'string') {

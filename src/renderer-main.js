@@ -132,7 +132,7 @@ ipcRenderer.on('load-event', (event, store) => {
         mixerContext.update(delta, now);
     };
     const levelRequest = {
-        levelName: 'resources/levels/levelalpha.json'
+        levelName: 'levelalpha'
     }
     ObjectImporter.loadLevel(levelRequest, Object.assign(runtimeContext, store)).catch(err => {
         error(err);

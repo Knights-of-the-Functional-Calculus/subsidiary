@@ -1,5 +1,5 @@
 function GameObject() {
-	this.mock = true;
+    this.mock = 'GameObject';
 }
 
 GameObject.prototype.schema = require('../../resources/gameObjects/_GameObjectSchema.json');

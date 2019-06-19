@@ -89,7 +89,7 @@ app.once('ready', function() {
             DEV: process.env.DEV,
             levelRequest: {
                 current: true,
-                levelName: 'resources/levels/levelalpha.json',
+                levelName: 'levelalpha',
             },
         })
     })

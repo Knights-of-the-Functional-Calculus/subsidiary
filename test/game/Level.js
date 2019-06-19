@@ -7,7 +7,7 @@ mockery.enable({
 });
 
 
-const sandbox = sinon.sandbox.create();
+const sandbox = sinon.createSandbox();
 const mockEventFunctions = require('../mocks/mockEventFunctions.js')(sandbox);
 mockery.registerMock('./EventFunctions.js', mockEventFunctions);
 
