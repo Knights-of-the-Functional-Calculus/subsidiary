@@ -6,6 +6,7 @@ Here are the programs you want in your environment:
 * [node](https://nodejs.org/en/) >=v11
 * npm - The appropriate version should be bundled with node.
 * [yarn](https://yarnpkg.com/en/docs/install) - Optional, LTS should do
+* [docker](https://docs.docker.com/install/)
 
 ## Usage
 
