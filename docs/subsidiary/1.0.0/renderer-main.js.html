@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>renderer-main.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading">Classes</li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="GameObject.html">GameObject</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="Level.html">Level</a></span></li><li class="nav-heading"><a href="global.html">Globals</a></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#onResize">onResize</a></span></li>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">renderer-main.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const path = require('path');
+const debug = require('debug')(path.basename(__filename));
+const error = require('debug')(`${path.basename(__filename)}:error`);
+debug.enabled = '*'
+
+const ObjectImporter = require('./src/game/ObjectImporter.js');
+
+const request = require('request');
+const ipcRenderer = require('electron').ipcRenderer;
+const renderer = new THREE.WebGLRenderer({
+    alpha: true,
+});
+renderer.autoClear = false;
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+const threads = [{}];
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(45,
+    window.innerWidth / window.innerHeight,
+    0.01, 1000);
+camera.position.z = 3;
+
+// ////////////////////////////////////////
+//    create THREEx.HtmlMixer      //
+// //////////////////////////////////////
+const mixerContext = new THREEx.HtmlMixer.Context(renderer, scene, camera);
+// handle window resize for mixerContext
+window.addEventListener('resize', function() {
+    mixerContext.rendererCss.setSize(window.innerWidth, window.innerHeight);
+}, false);
+// /////////////////////////////////////////////////////
+//    mixerContext configuration and dom attachement
+// ////////////////////////////////////////////////////
+// set up rendererCss
+const rendererCss = mixerContext.rendererCss;
+rendererCss.setSize(window.innerWidth, window.innerHeight);
+// set up rendererWebgl
+const rendererWebgl = mixerContext.rendererWebgl;
+const css3dElement = rendererCss.domElement;
+css3dElement.style.position = 'absolute';
+css3dElement.style.top = '0px';
+css3dElement.style.width = '100%';
+css3dElement.style.height = '100%';
+document.body.appendChild(css3dElement);
+
+const webglCanvas = rendererWebgl.domElement;
+webglCanvas.style.position = 'absolute';
+webglCanvas.style.top = '0px';
+webglCanvas.style.width = '100%';
+webglCanvas.style.height = '100%';
+webglCanvas.style.pointerEvents = 'none';
+css3dElement.appendChild(webglCanvas);
+
+// ////////////////////////////////////////////////
+//    create a Plane for THREEx.HtmlMixer       //
+// //////////////////////////////////////////////
+
+const runtimeContext = {};
+runtimeContext.camera = camera;
+runtimeContext.threads = threads;
+runtimeContext.mixerContext = mixerContext;
+runtimeContext.scene = scene;
+runtimeContext.threads = threads;
+
+
+// render the webgl
+threads[0].renderWebGL = function() {
+    renderer.render(scene, camera);
+};
+
+
+// ////////////////////////////////
+//    handle resize             //
+// //////////////////////////////
+/**
+ */
+function onResize() {
+    // notify the renderer of the size change
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    // update the camera
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+}
+
+
+window.addEventListener('resize', onResize, false);
+// //////////////////////////////////
+//    render the scene            //
+// ////////////////////////////////
+
+ipcRenderer.on('reload-event', async(event, store) => {
+    const level = await ObjectImporter.fetchLevel(store.levelRequest, runtimeContext).catch(err => {
+        error(err);
+    });
+    if (!level) {
+        error('Failed to fetch level.');
+        return 1;
+    }
+    const domObjects = level.domObjects
+    for (let i = domObjects.length - 1; i >= 0; i--) {
+        request.head({
+            url: domObjects[i].info.src
+        }, (err, response) => {
+            //TODO: Check to see if this etag is recurring
+            if (err) {
+                error(err);
+                return;
+            }
+            if (response.headers.etag === domObjects[i].info.etag) {
+                runtimeContext.dockerDone = runtimeContext.dockerDone || domObjects[i].info.dockerDone;
+                // This forces element refresh.
+                domObjects[i].domElement.src = domObjects[i].domElement.src;
+                if (!threads[0].renderDOM3d) {
+                    threads[0].renderDOM3d = function(delta, now) {
+                        // NOTE: it must be after camera mode
+                        mixerContext.update(delta, now);
+                    }
+                }
+            }
+        });
+    }
+});
+
+ipcRenderer.on('load-event', (event, store) => {
+    process.env.DEV = store.DEV;
+    if (process.env.DEV) {
+        debug('Adding render functions...');
+    }
+    // render the css3d
+    threads[0].renderDOM3d = function(delta, now) {
+        // NOTE: it must be after camera mode
+        mixerContext.update(delta, now);
+    };
+    const levelRequest = {
+        levelName: 'levelalpha'
+    }
+    ObjectImporter.loadLevel(levelRequest, Object.assign(runtimeContext, store)).catch(err => {
+        error(err);
+    });
+});
+// //////////////////////////////
+//    loop runner             //
+// ////////////////////////////
+let lastTimeMsec = null;
+
+function runGame(nowMsec) {
+    // keep looping
+    requestAnimationFrame(runGame);
+    // measure time
+    lastTimeMsec = lastTimeMsec || nowMsec - 1000 / 60;
+    const deltaMsec = Math.min(200, nowMsec - lastTimeMsec);
+    lastTimeMsec = nowMsec;
+    // call each update function
+    Object.keys(threads[0]).forEach(function(updateFn) {
+        threads[0][updateFn](deltaMsec / 1000, nowMsec / 1000);
+    });
+}
+
+function loading(nowMsec) {
+    if (runtimeContext.dockerDone) {
+        setTimeout(requestAnimationFrame.bind(null, runGame), 20);
+    } else {
+        setTimeout(requestAnimationFrame.bind(null, loading), 1000);
+    }
+}
+requestAnimationFrame(loading);</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.2</a> on Wed Jun 19 2019 03:06:36 GMT-0700 (Pacific Daylight Time) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>

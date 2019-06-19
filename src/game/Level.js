@@ -24,6 +24,16 @@ function _initializeGameObjects(runtimeContext, gameObjects) {
     }
 }
 
+/**
+ * Represents a level.
+ * @constructor
+ * @param {Object} kwargs - The argument object provided.
+ * @param {string} kwargs.name - The level name.
+ * @param {Object} kwargs.info - Miscellaneous meta data about the level.
+ * @param {Object[]} kwargs.gameObjects - See GameObjects.js for detailed description.
+ * @param {Object[]} kwargs.events - See EventFunctions.js for detailed description.
+ * @param {Object} runtimeContext - The runtime context responsible for passing globals.
+ */
 function Level(kwargs, runtimeContext) {
     const {
         name,
