@@ -1,0 +1,19 @@
+{
+    "name": "MainCharacter",
+    "instanceId": "main_character",
+    "mesh": "circle",
+    "events": [{
+        "name": "Movement",
+        "func": "wasd",
+        "capture": false,
+        "eventType": "keydown"
+    }],
+    "info": {
+    	"movement": {
+    		"up": "w",
+    		"left": "a",
+    		"down": "s",
+    		"right": "d"
+    	}
+    }
+}

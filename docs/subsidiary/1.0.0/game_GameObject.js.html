@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>game/GameObject.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading">Classes</li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="GameObject.html">GameObject</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="Level.html">Level</a></span></li><li class="nav-heading">Namespaces</li><li class="nav-heading"><span class="nav-item-type type-namespace">N</span><span class="nav-item-name"><a href="validator.html">validator</a></span></li><li class="nav-heading"><a href="global.html">Globals</a></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#_initializeGameObjects">_initializeGameObjects</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#_setCameraFocus">_setCameraFocus</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#addEvent">addEvent</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#addToScene">addToScene</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#circle">circle</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#fetchLevel">fetchLevel</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#iframe">iframe</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#importGameObject">importGameObject</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#injectEventFunctions">injectEventFunctions</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#injectMeshGenerator">injectMeshGenerator</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#lerpFunc">lerpFunc</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#loadLevel">loadLevel</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#onResize">onResize</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#toggleVisibility">toggleVisibility</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#wasd">wasd</a></span></li>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">game/GameObject.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const EventFunctions = require('./EventFunctions.js')
+
+/**
+ * Represents a game object.
+ * @constructor
+ * @param {Object} kwargs - The argument object provided.
+ * @param {string} kwargs.name - The game object name.
+ * @param {string} kwargs.instanceId - The instance id.
+ * @param {string} kwargs.objectType - The object type.
+ * @param {Object} kwargs.info - Miscellaneous meta data about the level.
+ * @param {Object[]} kwargs.children - See GameObjects.js for detailed description.
+ * @param {Object[]} kwargs.events - See EventFunctions.js for detailed description.
+ * @param {function} kwargs.mesh - The mesh generating function.
+ * @param {boolean} kwargs.visible - Toggles the visiblility of the object.
+ */
+function GameObject(kwargs) {
+    const {
+        name,
+        instanceId,
+        objectType,
+        events,
+        info,
+        mesh,
+        children,
+        visible,
+    } = kwargs;
+    this.name = name;
+    this.instanceId = instanceId;
+    this.type = objectType;
+    this.mesh = mesh.bind(this);
+    this.info = info;
+    this.children = children;
+    this.visible = visible === undefined || visible;
+
+    events.forEach(EventFunctions.addEvent.bind(this));
+}
+
+GameObject.prototype.schema = require('../../resources/gameObjects/_GameObjectSchema.json');
+
+module.exports = GameObject;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.2</a> on Thu Jun 20 2019 08:05:52 GMT-0700 (Pacific Daylight Time) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>

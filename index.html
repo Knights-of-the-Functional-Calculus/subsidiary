@@ -1,16 +1,18 @@
 <!DOCTYPE html>
-<script src="https://rawgit.com/mrdoob/three.js/master/build/three.min.js"></script>
-<script src="https://rawgit.com/mrdoob/three.js/master/examples/js/controls/OrbitControls.js"></script>
-<script src="https://rawgit.com/mrdoob/three.js/master/examples/js/renderers/CSS3DRenderer.js"></script>
-<script src='https://rawgit.com/jeromeetienne/threex.htmlmixer/master/threex.htmlmixer.js'></script>
+<script src="built/three.min.js"></script>
+<script src="built/CSS3DRenderer.js"></script>
+<script src='built/threex.htmlmixer.js'></script>
+<head>
+	<!-- CSP just for demo purposes - not the actual csp -->
+	<meta http-equiv="Content-Security-Policy" content="frame-src http://0.0.0.0:3000; script-src 'self'; "/>
+</head>
 <style>
 html,
 body {
-    width: 100%;
-    height: 100%;
+width: 100%;
+height: 100%;
 }
 </style>
-
 <body style='margin: 0px; background-color: #bbbbbb; overflow: hidden;'>
-    <script src="src/renderer-main.js"></script>
+	<script src="src/renderer-main.js"></script>
 </body>

@@ -1,0 +1,43 @@
+{
+    "id": "/GameObject",
+    "type": "object",
+    "properties": {
+        "instanceId": {
+            "type": "string"
+        },
+        "objectType": {
+            "type": "string"
+        },
+        "name": {
+            "type": "string"
+        },
+        "mesh": {
+            "type": "string"
+        },
+        "events": {
+            "type": "array",
+            "items": {
+                "$ref": "/Event"
+            },
+            "default": []
+        },
+        "info": {
+            "type": "object"
+        },
+        "children": {
+            "type": "object",
+            "items": {
+                "anyOf": [{
+                    "$ref": "/GameObject#"
+                }, {
+                    "type": "string"
+                }]
+            },
+            "default": []
+        },
+        "visible": {
+            "type": "boolean"
+        }
+    },
+    "required": ["name"]
+}
