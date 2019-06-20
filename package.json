@@ -8,7 +8,7 @@
         "dev": "./node_modules/.bin/electron -r dotenv/config . dotenv_config_path=.env --inspect",
         "test": "mocha 'test/**/*.js'",
         "validate": "node resources/_validate.js",
-        "generate-docs": "node_modules/.bin/jsdoc --configure .jsdoc.json --verbose"
+        "gen-docs": "node_modules/.bin/jsdoc --configure .jsdoc.json --verbose"
     },
     "keywords": [
         "Electron",

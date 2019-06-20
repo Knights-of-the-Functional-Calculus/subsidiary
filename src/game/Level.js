@@ -1,11 +1,22 @@
 const EventFunctions = require('./EventFunctions.js');
 
+/**
+ * Flags the target game object for camera focus.
+ * @function
+ * @param {Object} gameObject - The target game object.
+ */
 function _setCameraFocus(gameObject) {
     if (this.info && this.info.cameraLocked === gameObject.instanceId) {
         gameObject.cameraLocked = true;
     }
 }
 
+/**
+ * Initializes an array of game objects within a runtime context.
+ * @function
+ * @param {Object} runtimeContext - The runtime context.
+ * @param {Object[]} gameObject - The game object array.
+ */
 function _initializeGameObjects(runtimeContext, gameObjects) {
     for (var i = gameObjects.length - 1; i >= 0; i--) {
         if (gameObjects[i].info && gameObjects[i].info.isDOM) {

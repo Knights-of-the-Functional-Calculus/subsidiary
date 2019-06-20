@@ -14,8 +14,20 @@ validator.addSchema(GameObject.prototype.schema);
 validator.addSchema(Level.prototype.schema);
 validator.addSchema(require('../../resources/events/_EventSpec.json'));
 
+/**
+ * @namespace
+ * @property {Object} validator - Exposed validator used for object descriptors.
+ * @property {Object} levelCache - Cached levels.
+ */
 exports.validator = validator;
+exports.levelCache = {};
 
+/**
+ * Imports the game object description, validates it, and initializes. the object
+ * @function
+ * @param {string} filename - The descriptor file to import.
+ * @returns {Object} A new game object.
+ */
 exports.importGameObject = function(filename) {
     const object = require(`../../${filename}`);
     validator.validate(object, '/GameObject', {
@@ -27,10 +39,20 @@ exports.importGameObject = function(filename) {
     return new GameObject(object);
 }
 
-exports.loadLevel = async function({
+/**
+ * Imports the level object description, validates it, and initializes the object. The level is cached.
+ * @function
+ * @param {Object} runtimeContext - The context in which to grab global runtime data.
+ * @param {Object[]} runtimeContext.threads - The array of available working threads.
+ * @param {Object} identifier - The information about where to find the level descriptor.
+ * @param {string} identifier.levelName - The name of the level. May be used to import the level.
+ * @param {string} identifier.url - If the level descriptor is at a remote location, request for it.
+ * @returns {Object} A new level object.
+ */
+exports.loadLevel = async function(runtimeContext, {
     levelName,
     url
-}, runtimeContext) {
+}) {
     let object;
     if (url) {
         object = await request({
@@ -67,22 +89,36 @@ exports.loadLevel = async function({
     return level;
 }
 
-exports.levelCache = {};
-
-exports.fetchLevel = async function({
+/**
+ * Checks the cache before attempting to load the level from a descriptor.
+ * @function
+ * @param {Object} runtimeContext - The context in which to grab global runtime data.
+ * @param {Object} identifier - The information about where to find the level descriptor.
+ * @param {string} identifier.current - Flag to make function check for and return the current level.
+ * @param {string} identifier.levelName - The name of the level. May be used to import the level.
+ * @param {string} identifier.url - If the level descriptor is at a remote location, request for it.
+ * @returns {Object} A level object.
+ */
+exports.fetchLevel = async function(runtimeContext, {
     current,
     levelName,
     url
-}, runtimeContext) {
+}) {
     if (current && this.levelCache[this.currentLevel]) {
         return this.levelCache[this.currentLevel];
     }
-    return this.levelCache[levelName] || await this.loadLevel({
+    return this.levelCache[levelName] || await this.loadLevel(runtimeContext, {
         levelName,
         url
-    }, runtimeContext);
+    });
 }
 
+/**
+ * Adds some mesh object to a THREEjs scene.
+ * @function
+ * @param {Object} scene - The THREEjs scene.
+ * @param {Object} actor - The object containing the mesh.
+ */
 exports.addToScene = function(scene, actor) {
     debug(`${actor.name} added to ${scene}`);
     if (typeof actor.mesh === 'function')

@@ -89,7 +89,7 @@ window.addEventListener('resize', onResize, false);
 // ////////////////////////////////
 
 ipcRenderer.on('reload-event', async(event, store) => {
-    const level = await ObjectImporter.fetchLevel(store.levelRequest, runtimeContext).catch(err => {
+    const level = await ObjectImporter.fetchLevel(runtimeContext, store.levelRequest).catch(err => {
         error(err);
     });
     if (!level) {
@@ -134,7 +134,7 @@ ipcRenderer.on('load-event', (event, store) => {
     const levelRequest = {
         levelName: 'levelalpha'
     }
-    ObjectImporter.loadLevel(levelRequest, Object.assign(runtimeContext, store)).catch(err => {
+    ObjectImporter.loadLevel(Object.assign(runtimeContext, store), levelRequest).catch(err => {
         error(err);
     });
 });

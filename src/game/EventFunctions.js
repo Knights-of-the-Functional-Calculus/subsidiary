@@ -6,6 +6,13 @@ const Validator = require('jsonschema').Validator;
 const validator = new Validator();
 validator.addSchema(exports.schema);
 
+/**
+ * Validates the event object and injects the appropriate unbound function into the target.
+ * @function
+ * @param {Object} target - The circular THREE mesh object.
+ * @param {Object[]} target.events - The array of event objects.
+ * @param {string} target.events[].func - The name of the function to inject.
+ */
 exports.injectEventFunctions = function(target) {
     for (var i = target.events.length - 1; i >= 0; i--) {
         debug(`Injecting ${target.events[i]['func'] } into ${this}`);
@@ -19,6 +26,14 @@ exports.injectEventFunctions = function(target) {
     }
 }
 
+/**
+ * Binds the function to the context object and creates an event listener in the document.
+ * @function
+ * @param {Object} event - The event object.
+ * @param {string} event.eventType - The type of event to indicate it in the event loop.
+ * @param {function} event.func - The unbound function.
+ * @param {boolean} event.capture - The flag that determines when to start func: https://javascript.info/bubbling-and-capturing
+ */
 exports.addEvent = function({
     eventType,
     func,
@@ -28,6 +43,12 @@ exports.addEvent = function({
     document.addEventListener(eventType, func, capture);
 }
 
+/**
+ * Tracks key input and toggles the visibility of the calling object accordingly.
+ * TODO: Not just 't'.
+ * @function
+ * @param {Object} event - A standard DOM event.
+ */
 exports.toggleVisibility = function(event) {
     const keyCode = event.which;
     if (keyCode === keycode('t')) {
@@ -40,6 +61,12 @@ exports.toggleVisibility = function(event) {
     }
 }
 
+/**
+ * Lerps a game object using a bound context object for action specifications.
+ * TODO: There are magic numbers in here.
+ * @function
+ * @param {number} delta - The time between steps in each frame.
+ */
 const lerpFunc = function(delta) {
     if (this.c >= 1) {
         delete this.gameObject.thread[`lerp${this.gameObject.name}`];
@@ -53,6 +80,12 @@ const lerpFunc = function(delta) {
     }
 }
 
+/**
+ * Tracks key input and defines context object for lerping the game object accordingly.
+ * Then, injects the lerping function into the calling object's thread.
+ * @function
+ * @param {Object} event - A standard DOM event.
+ */
 exports.wasd = function(event) {
     if (this.state === 'moving') {
         return this.currentDirection;

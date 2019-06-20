@@ -65,11 +65,10 @@ describe('ObjectImporter.js', () => {
             const runtimeContext = {
                 threads: []
             };
-            const result = await objectImporterFunction({
+            const result = await objectImporterFunction(runtimeContext, {
                 levelName,
                 url
-            }, runtimeContext);
-            console.log(result)
+            });
             expect(ObjectImporter.validator.validate.calledOnce).to.be.true;
             result.gameObjects.forEach(gameObject => expect(gameObject).to.equal('bar'));
             expect(result.mock).to.equal('Level');
@@ -80,9 +79,9 @@ describe('ObjectImporter.js', () => {
             const runtimeContext = {
                 threads: []
             };
-            const result = await objectImporterFunction({
+            const result = await objectImporterFunction(runtimeContext, {
                 levelName
-            }, runtimeContext);
+            });
             expect(ObjectImporter.validator.validate.calledOnce).to.be.true;
             result.gameObjects.forEach(gameObject => expect(gameObject).to.equal('bar'));
             expect(result.mock).to.equal('Level');
@@ -99,9 +98,10 @@ describe('ObjectImporter.js', () => {
 
     describe('fetchLevel', async() => {
 
-        let objectImporterFunction;
+        let objectImporterFunction, runtimeContext;
 
         before(() => {
+            runtimeContext = {};
             objectImporterFunction = ObjectImporter.fetchLevel.bind(ObjectImporter);
             sandbox.replace(ObjectImporter, 'loadLevel', sandbox.fake.returns('baz'));
         });
@@ -115,7 +115,7 @@ describe('ObjectImporter.js', () => {
 
         it('should fetch current level from cache', async() => {
             ObjectImporter.currentLevel = 'foo';
-            const result = await objectImporterFunction({
+            const result = await objectImporterFunction(runtimeContext, {
                 current: true
             });
 
@@ -123,7 +123,7 @@ describe('ObjectImporter.js', () => {
         });
 
         it('should fetch some level from cache', async() => {
-            const result = await objectImporterFunction({
+            const result = await objectImporterFunction(runtimeContext, {
                 levelName: 'foo2',
             });
 
@@ -131,7 +131,7 @@ describe('ObjectImporter.js', () => {
         });
 
         it('should load level', async() => {
-            const result = await objectImporterFunction({
+            const result = await objectImporterFunction(runtimeContext, {
                 levelName: 'baz',
             });
             expect(result).to.equal('baz');
