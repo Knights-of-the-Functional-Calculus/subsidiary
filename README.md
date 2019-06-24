@@ -11,6 +11,9 @@ I suppose I should explain myself. My goal is to create a work of fiction that h
 
 **The Boss**: There is a lesson to be learned here. Don't assume anything about what your developers do. Ask as stupid a question as you need. You pay us to answer. A professional will answer you honestly. Though engineers tend to be a bit weird on etiqutte, you will know when you've earned their respect, and it's not by trying to look like the smartest guy in the room.
 ## Prerequisites
+### Prior Knowledge
+In order to fully experience this game, you should know how to use git and be able to program in at least one ubiquitous programming language (I recommend Python). In order to contribute to this project, Javascript knowledge is needed and Docker knowledge is recommended. I may migrate some of the code base to a native language in the future (looking to learn Rust), but for now I want to use a language that has a bunch of nice toys and actually renderers an iframe. Working with iframe has cut out a lot of the hassle of programming my own viewport UI for the programming environment.
+### Installation
 Here are the programs you want in your environment:
 * [node](https://nodejs.org/en/) >=v11
 * npm - The appropriate version should be bundled with node.
@@ -21,10 +24,8 @@ Here are the programs you want in your environment:
 
 ```bash
 # Get the project with submodules
-git clone --recurse-submodules https://github.com/j4qfrost/subsidiary.git
-```
+git clone --recurse-submodules https://github.com/Knights-of-the-Functional-Calculus/subsidiary.git
 
-```bash
 npm install
 npm start # For full view
 # OR
