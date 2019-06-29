@@ -8,13 +8,12 @@
         "eventType": "keydown"
     }],
     "info": {
-        "isDOM" : true,
+        "isDOM": true,
         "id": "terminal",
-    	"src": "http://0.0.0.0:3000",
+        "src": "http://0.0.0.0:3000",
         "style": {
             "border": "none"
         },
-        "etag": "W/\"3d4-16acd5f96f8\"",
         "dockerDone": true
     }
 }

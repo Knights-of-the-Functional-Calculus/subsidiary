@@ -5,6 +5,8 @@ debug.enabled = '*'
 
 const ObjectImporter = require('./src/game/ObjectImporter.js');
 
+const remote = require('electron').remote;
+
 const request = require('request');
 const ipcRenderer = require('electron').ipcRenderer;
 const renderer = new THREE.WebGLRenderer({
@@ -88,8 +90,8 @@ window.addEventListener('resize', onResize, false);
 //    render the scene            //
 // ////////////////////////////////
 
-ipcRenderer.on('reload-event', async(event, store) => {
-    const level = await ObjectImporter.fetchLevel(runtimeContext, store.levelRequest).catch(err => {
+ipcRenderer.on('reload-event', async(store) => {
+    const level = await ObjectImporter.fetchLevel(Object.assign(runtimeContext, store), store.levelRequest).catch(err => {
         error(err);
     });
     if (!level) {
@@ -101,20 +103,17 @@ ipcRenderer.on('reload-event', async(event, store) => {
         request.head({
             url: domObjects[i].info.src
         }, (err, response) => {
-            //TODO: Check to see if this etag is recurring
             if (err) {
                 error(err);
                 return;
             }
-            if (response.headers.etag === domObjects[i].info.etag) {
-                runtimeContext.dockerDone = runtimeContext.dockerDone || domObjects[i].info.dockerDone;
-                // This forces element refresh.
-                domObjects[i].domElement.src = domObjects[i].domElement.src;
-                if (!threads[0].renderDOM3d) {
-                    threads[0].renderDOM3d = function(delta, now) {
-                        // NOTE: it must be after camera mode
-                        mixerContext.update(delta, now);
-                    }
+            runtimeContext.dockerDone = response.headers.etag === remote.getCurrentWindow().dockerEtag;
+            // This forces element refresh.
+            domObjects[i].domElement.src = domObjects[i].domElement.src;
+            if (!threads[0].renderDOM3d) {
+                threads[0].renderDOM3d = function(delta, now) {
+                    // NOTE: it must be after camera mode
+                    mixerContext.update(delta, now);
                 }
             }
         });
@@ -122,7 +121,7 @@ ipcRenderer.on('reload-event', async(event, store) => {
 });
 
 ipcRenderer.on('load-event', (event, store) => {
-    process.env.DEV = store.DEV;
+    process.env.DEV = remote.getCurrentWindow().DEV;
     if (process.env.DEV) {
         debug('Adding render functions...');
     }
@@ -156,11 +155,25 @@ function runGame(nowMsec) {
     });
 }
 
+let reloaded = false;
+
 function loading(nowMsec) {
     if (runtimeContext.dockerDone) {
         setTimeout(requestAnimationFrame.bind(null, runGame), 20);
     } else {
         setTimeout(requestAnimationFrame.bind(null, loading), 1000);
+        if (remote.getCurrentWindow().poppedCherry && !reloaded) {
+            reloaded = true;
+            ipcRenderer.emit('reload-event', {
+                DEV: remote.getCurrentWindow().DEV,
+                levelRequest: {
+                    current: true,
+                    levelName: 'levelalpha',
+                },
+            })
+        } else {
+            debug('waiting...');
+        }
     }
 }
 requestAnimationFrame(loading);

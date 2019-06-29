@@ -5,7 +5,7 @@ const {
 } = require('electron');
 const path = require('path');
 const url = require('url');
-const compose = require('./src/ops/orchestration.js');
+const orchestration = require('./src/ops/orchestration.js');
 if (process.env.DEV) {
     require('electron-reload')(__dirname, {
         electron: path.join(__dirname, 'node_modules', '.bin', 'electron'),
@@ -41,6 +41,7 @@ function createWindow() {
 
     // Emitted when the window is closed.
     mainWindow.on('closed', function() {
+
         // Dereference the window object, usually you would store windows
         // in an array if your app supports multi windows, this is the time
         // when you should delete the corresponding element.
@@ -48,6 +49,7 @@ function createWindow() {
     });
 
     mainWindow.webContents.on('will-prevent-unload', (event) => {
+        mainWindow.poppedCherry = true;
         const choice = dialog.showMessageBox(mainWindow, {
             type: 'question',
             buttons: ['Yes', 'No'],
@@ -61,7 +63,15 @@ function createWindow() {
         if (choice === 0) {
             event.preventDefault();
         }
-    })
+    });
+
+    mainWindow.DEV = true;
+    setupDevEnvironment().then(() => orchestration.webRequestHeadContainer('wetty')).then((data) => {
+        mainWindow.dockerEtag = data.headers.etag;
+        mainWindow.webContents.send('load-event', {
+            dockerDone: true,
+        });
+    });
 }
 
 
@@ -69,37 +79,24 @@ function createWindow() {
  * @return {Promise}
  */
 function setupDevEnvironment() {
-    return compose.dropContainers()
-        .then(compose.runContainer.bind(null, 'wetty'))
-        .then(compose.runContainer.bind(null, 'wetty-ssh'));
+    return orchestration.dropContainers()
+        .then(orchestration.runContainer.bind(null, 'wetty'))
+        .then(orchestration.runContainer.bind(null, 'wetty-ssh'));
 }
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.once('ready', function() {
-    setupDevEnvironment().then(() => mainWindow.webContents.send('load-event', {
-        dockerDone: true,
-        DEV: process.env.DEV,
-    }));
+    console.log('ready')
     createWindow();
-    mainWindow.webContents.on('dom-ready', function() {
-        mainWindow.webContents.send('reload-event', {
-            dockerDone: true,
-            DEV: process.env.DEV,
-            levelRequest: {
-                current: true,
-                levelName: 'levelalpha',
-            },
-        })
-    })
 });
 
 // Quit when all windows are closed.
 app.on('window-all-closed', async function() {
     // On OS X it is common for applications and their menu bar
     // to stay active until the user quits explicitly with Cmd + Q
-    await compose.dropContainers();
+    await orchestration.dropContainers();
     if (process.platform !== 'darwin') {
         app.quit();
     }
