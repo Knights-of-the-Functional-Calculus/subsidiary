@@ -10,7 +10,7 @@
     "info": {
         "isDOM": true,
         "id": "terminal",
-        "src": "http://0.0.0.0:3000",
+        "src": "http://localhost:3000",
         "style": {
             "border": "none"
         },
