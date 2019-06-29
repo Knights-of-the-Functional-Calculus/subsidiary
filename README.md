@@ -1,7 +1,7 @@
 # subsidiary
 [![Build Status](https://travis-ci.org/Knights-of-the-Functional-Calculus/subsidiary.svg?branch=develop)](https://travis-ci.org/Knights-of-the-Functional-Calculus/subsidiary)
 ## What is this?
-My goal is to create a work of fiction that highlights the whacky world of tech. This is the personal story told through the lens of a not quite naive, not quite cynical, recent college grad.
+My goal is to create a work of fiction that highlights the whacky world of tech. This is a personal story told through the lens of a not quite naive, not quite cynical, recent college grad.
 ### The Audience
 **The Layman**: If you have no intention in engaging in the the coding portion of the game, that is totally fine. You won't be able to fully experience the story, but there will be a mechanic that will ferry you through the game. You may also be able to copy and paste solutions, but you still won't get the full experience.
 
