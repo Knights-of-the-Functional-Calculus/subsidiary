@@ -47,7 +47,7 @@
         "request": "^2.88.0",
         "request-promise-native": "^1.0.7",
         "stats.js": "^0.17.0",
-        "three": "^0.99.0",
+        "three": "^0.137.0",
         "three-css2drender": "^1.0.0"
     }
 }
